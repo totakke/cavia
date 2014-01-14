@@ -4,17 +4,17 @@
             [me.raynes.fs :as fs]
             [pandect.core :refer [sha1-file]]))
 
-(def ^:private default-profile {:download-to ".cavy"})
+(def default-profile {:download-to ".cavy"})
 
 (defonce ^:private cavy-profile (atom nil))
 
 (defn set-profile [profile]
-  (reset! cavy-profile (merge profile default-profile)))
+  (reset! cavy-profile profile))
 
 (defmacro defcavy
-  [name spec]
-  `(let [spec# ~spec]
-     (def ~name spec#)
+  [name profile]
+  `(let [profile# (merge default-profile ~profile)]
+     (def ~name profile#)
      (set-profile ~name)))
 
 (defn- print-hash-alert
