@@ -23,6 +23,23 @@
   (println "  Expected: " expect-hash)
   (println "    Actual: " actual-hash))
 
+(defn resource [id]
+  (let [{:keys [resources download-to]} @cavy-profile]
+    (if-let [r (first (filter #(= (:id %) id) resources))]
+      (str download-to "/" (:id r)))))
+
+(defn exist? [id]
+  (let [f (resource id)]
+    (and (not (nil? f)) (fs/file? f))))
+
+(defn valid? [id]
+  (let [sha1 (->> (:resources @cavy-profile)
+                  (filter #(= (:id %) id))
+                  (first)
+                  (:sha1))
+        f (resource id)]
+    (and (exist? id) (= (sha1-file f) sha1))))
+
 (defn verify []
   (let [{:keys [resources download-to]} @cavy-profile]
     (doseq [{:keys [id sha1]} resources]
@@ -59,10 +76,6 @@
     (when-not (fs/directory? download-to)
       (fs/mkdir download-to))
     (doseq [r resources]
-      (get* r download-to))))
-
-(defn resource [id]
-  (let [{:keys [resources download-to]} @cavy-profile]
-    (if-let [r (first (filter #(= (:id %) id) resources))]
-      (str download-to "/" (:id r))
-      nil)))
+      (if (valid? (:id r))
+        (println "Already downloaded: " (:id r))
+        (get* r download-to)))))
