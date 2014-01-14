@@ -18,17 +18,17 @@
      (set-profile ~name)))
 
 (defn- print-hash-alert
-  [name expect-hash actual-hash]
-  (println "Invalid hash: " name)
+  [id expect-hash actual-hash]
+  (println "Invalid hash: " id)
   (println "  Expected: " expect-hash)
   (println "    Actual: " actual-hash))
 
 (defn verify []
   (let [{:keys [resources download-to]} @cavy-profile]
-    (doseq [{:keys [name sha1]} resources]
-      (let [act-sha1 (sha1-file (str download-to "/" name))]
+    (doseq [{:keys [id sha1]} resources]
+      (let [act-sha1 (sha1-file (str download-to "/" id))]
         (when-not (= act-sha1 sha1)
-          (print-hash-alert name sha1 act-sha1))))))
+          (print-hash-alert id sha1 act-sha1))))))
 
 (defn clean []
   (let [{:keys [download-to]} @cavy-profile]
@@ -41,29 +41,28 @@
               out (io/output-stream f)]
     (io/copy in out)))
 
-(defn- get* [resource]
-  (let [{:keys [name url sha1]} resource
-        f (str download-to "/" name)
+(defn- get* [resource download-to]
+  (let [{:keys [id url sha1]} resource
+        f (str download-to "/" id)
         download-f (str f ".download")
         unverified-f (str f ".unverified")]
-    (println (str "Retrieving " name " from " url))
+    (println (str "Retrieving " id " from " url))
     (download url download-f)
     (fs/rename download-f unverified-f)
     (let [act-sha1 (sha1-file unverified-f)]
       (if (= act-sha1 sha1)
         (fs/rename unverified-f f)
-        (print-hash-alert name sha1 act-sha1)))))
+        (print-hash-alert id sha1 act-sha1)))))
 
 (defn get []
   (let [{:keys [resources download-to]} @cavy-profile]
     (when-not (fs/directory? download-to)
       (fs/mkdir download-to))
     (doseq [r resources]
-      (get* r))))
+      (get* r download-to))))
 
-(defn resource [name]
+(defn resource [id]
   (let [{:keys [resources download-to]} @cavy-profile]
-    (->> (filter #(= (:name %) name) resources)
-         (first)
-         (:name)
-         (str download-to "/"))))
+    (if-let [r (first (filter #(= (:id %) id) resources))]
+      (str download-to "/" (:id r))
+      nil)))
