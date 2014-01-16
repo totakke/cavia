@@ -17,20 +17,42 @@
      (def ~name profile#)
      (set-profile ~name)))
 
-(defn- print-hash-alert
-  [id expect-hash actual-hash]
-  (println "Invalid hash: " id)
-  (println "  Expected: " expect-hash)
-  (println "    Actual: " actual-hash))
+;;;
+;;; Access
+;;;
 
 (defn resource [id]
   (let [{:keys [resources download-to]} @cavy-profile]
     (if-let [r (first (filter #(= (:id %) id) resources))]
       (str download-to "/" (:id r)))))
 
+(defn- resource-unverified [id]
+  (str (resource id) ".unverified"))
+
 (defn exist? [id]
   (let [f (resource id)]
     (and (not (nil? f)) (fs/file? f))))
+
+(defn- exist-unverified? [id]
+  (let [f (resource-unverified id)]
+    (and (not (nil? f)) (fs/file? f))))
+
+;;;
+;;; Validation
+;;;
+
+(defn- print-hash-alert
+  ([id]
+     (let [sha1 (->> (:resources @cavy-profile)
+                     (filter #(= (:id %) id))
+                     (first)
+                     (:sha1))
+           f (resource id)]
+       (print-hash-alert id sha1 (sha1-file f))))
+  ([id expect-hash actual-hash]
+     (println (str "Invalid hash: " id))
+     (println (str "  Expected: " expect-hash))
+     (println (str "    Actual: " actual-hash))))
 
 (defn valid? [id]
   (let [sha1 (->> (:resources @cavy-profile)
@@ -40,17 +62,41 @@
         f (resource id)]
     (and (exist? id) (= (sha1-file f) sha1))))
 
-(defn verify []
-  (let [{:keys [resources download-to]} @cavy-profile]
-    (doseq [{:keys [id sha1]} resources]
-      (let [act-sha1 (sha1-file (str download-to "/" id))]
-        (when-not (= act-sha1 sha1)
-          (print-hash-alert id sha1 act-sha1))))))
+(defn- valid-unverified? [id]
+  (let [sha1 (->> (:resources @cavy-profile)
+                  (filter #(= (:id %) id))
+                  (first)
+                  (:sha1))
+        f (resource-unverified id)]
+    (and (exist-unverified? id) (= (sha1-file f) sha1))))
 
-(defn clean []
-  (let [{:keys [download-to]} @cavy-profile]
-    (fs/delete-dir download-to))
-  nil)
+(defn verify
+  ([] (let [{:keys [resources download-to]} @cavy-profile]
+        (doseq [{:keys [id sha1]} resources]
+          (let [act-sha1 (sha1-file (resource id))]
+            (when-not (= act-sha1 sha1)
+              (print-hash-alert id sha1 act-sha1))))))
+  ([id] (if (exist? id)
+          (when-not (valid? id)
+            (print-hash-alert id))
+          (when (valid-unverified? id)
+            (fs/rename (resource-unverified id) (resource id))
+            (println (str "Verified " id))))))
+
+;;;
+;;; Clean
+;;;
+
+(defn clean
+  ([] (let [{:keys [download-to]} @cavy-profile]
+        (fs/delete-dir download-to))
+     nil)
+  ([id] (fs/delete (resource id))
+     nil))
+
+;;;
+;;; Download
+;;;
 
 (defn- download
   [url f]
@@ -76,6 +122,7 @@
     (when-not (fs/directory? download-to)
       (fs/mkdir download-to))
     (doseq [r resources]
-      (if (valid? (:id r))
-        (println "Already downloaded: " (:id r))
-        (get* r download-to)))))
+      (cond
+       (valid? (:id r)) (println "Already downloaded: " (:id r))
+       (valid-unverified? (:id r)) (verify (:id r))
+       :else (get* r download-to)))))
