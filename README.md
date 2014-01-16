@@ -64,6 +64,23 @@ It returns `nil` when the id is not defined.
     (is (= (slurp (cavy/resource "resource1")) "resource1's content")))
 ```
 
+## With Midje
+
+```Clojure
+(ns foo.t-core
+  (:require [midje.sweet :refer :all]
+            [cavy.core :as cavy :refer [defcavy]]))
+
+(defcavy mycavy
+  {:resources [{:id "resource1"
+                :url "http://example.com/resource1"
+                :sha1 "1234567890abcdefghijklmnopqrstuvwxyz1234"}]})
+
+(with-state-changes [(before :facts (cavy/get))]
+  (fact "tests for a large file" :slow
+    (slurp (cavy/resource "resource1") => "resource1's content")))
+```
+
 ## License
 
 Copyright © 2014 FIXME
