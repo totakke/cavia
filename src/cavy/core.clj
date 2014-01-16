@@ -2,7 +2,8 @@
   (:refer-clojure :exclude [get])
   (:require [clojure.java.io :as io]
             [me.raynes.fs :as fs]
-            [pandect.core :refer [sha1-file]]))
+            [pandect.core :refer [sha1-file]]
+            [cavy.downloader :as dl]))
 
 (def default-profile {:download-to ".cavy"})
 
@@ -98,11 +99,11 @@
 ;;; Download
 ;;;
 
-(defn- download
-  [url f]
-  (with-open [in (io/input-stream url)
-              out (io/output-stream f)]
-    (io/copy in out)))
+;; (defn- download
+;;   [url f]
+;;   (with-open [in (io/input-stream url)
+;;               out (io/output-stream f)]
+;;     (io/copy in out)))
 
 (defn- get* [resource download-to]
   (let [{:keys [id url sha1]} resource
@@ -110,7 +111,7 @@
         download-f (str f ".download")
         unverified-f (str f ".unverified")]
     (println (str "Retrieving " id " from " url))
-    (download url download-f)
+    (dl/http-download! url download-f)
     (fs/rename download-f unverified-f)
     (let [act-sha1 (sha1-file unverified-f)]
       (if (= act-sha1 sha1)
