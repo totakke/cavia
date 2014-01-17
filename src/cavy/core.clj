@@ -3,7 +3,12 @@
   (:require [clojure.java.io :as io]
             [me.raynes.fs :as fs]
             [pandect.core :refer [sha1-file]]
+            [cavy.common :refer :all]
             [cavy.downloader :as dl]))
+
+;;;
+;;; Profile
+;;;
 
 (def default-profile {:download-to ".cavy"})
 
@@ -17,6 +22,14 @@
   `(let [profile# (merge default-profile ~profile)]
      (def ~name profile#)
      (set-profile ~name)))
+
+;;;
+;;; Verbosity
+;;;
+
+(defmacro without-print [& body]
+  `(binding [*verbose* false]
+     ~@body))
 
 ;;;
 ;;; Access
@@ -82,7 +95,8 @@
             (print-hash-alert id))
           (when (valid-unverified? id)
             (fs/rename (resource-unverified id) (resource id))
-            (println (str "Verified " id))))))
+            (when *verbose*
+              (println (str "Verified " id)))))))
 
 ;;;
 ;;; Clean
@@ -99,18 +113,13 @@
 ;;; Download
 ;;;
 
-;; (defn- download
-;;   [url f]
-;;   (with-open [in (io/input-stream url)
-;;               out (io/output-stream f)]
-;;     (io/copy in out)))
-
 (defn- get* [resource download-to]
   (let [{:keys [id url sha1]} resource
         f (str download-to "/" id)
         download-f (str f ".download")
         unverified-f (str f ".unverified")]
-    (println (str "Retrieving " id " from " url))
+    (when *verbose*
+      (println (str "Retrieving " id " from " url)))
     (dl/http-download! url download-f)
     (fs/rename download-f unverified-f)
     (let [act-sha1 (sha1-file unverified-f)]
@@ -118,12 +127,14 @@
         (fs/rename unverified-f f)
         (print-hash-alert id sha1 act-sha1)))))
 
-(defn get []
+(defn get
+  []
   (let [{:keys [resources download-to]} @cavy-profile]
     (when-not (fs/directory? download-to)
       (fs/mkdir download-to))
     (doseq [r resources]
       (cond
-       (valid? (:id r)) (println "Already downloaded: " (:id r))
+       (valid? (:id r)) (when *verbose*
+                          (println "Already downloaded: " (:id r)))
        (valid-unverified? (:id r)) (verify (:id r))
        :else (get* r download-to)))))

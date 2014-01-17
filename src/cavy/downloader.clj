@@ -1,6 +1,7 @@
 (ns cavy.downloader
   (:require [clojure.string :as string]
-            [clj-http.client :as client]))
+            [clj-http.client :as client]
+            [cavy.common :refer :all]))
 
 (defn- print-progress
   [now total]
@@ -22,8 +23,10 @@
       (loop [len (.read is data)
              sum len]
         (when-not (= len -1)
-          (print-progress sum content-len)
+          (when *verbose*
+            (print-progress sum content-len))
           (.write w data 0 len)
           (let [len (.read is data)]
             (recur len (+ sum len)))))
-      (println))))
+      (when *verbose*
+        (println)))))

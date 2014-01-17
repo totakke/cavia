@@ -4,10 +4,10 @@
 
 (defcavy mycavy
   {:resources [{:id "test-resource"
-                :url "http://example.com"
-                :sha1 "12179caec26a089cabcbb75c4dbe0bdfe60951f7"}
+                :url "http://clojure.org/space/showimage/clojure-icon.gif"
+                :sha1 "f21616d75dc27dd2b89fcdef04177976a5d404c4"}
                {:id "test-resource2"
-                :url "http://example.com"
+                :url "http://clojure.org/space/showimage/clojure-icon.gif"
                 :sha1 "unverifiedsha1"}]})
 
 (defn fixture-cavy [f]
