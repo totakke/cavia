@@ -4,6 +4,8 @@ cavy is a manager library for test resources.
 
 ## Usage
 
+### Define resources profile
+
 First, load `cavy.core` and prepare resources' information with `defcavy` macro.
 
 ```Clojure
@@ -21,15 +23,25 @@ First, load `cavy.core` and prepare resources' information with `defcavy` macro.
 
 The last `defcavy` will be used on all cavy functions.
 
+### Resource management
+
 cavy provides some functions for manage resources.
 
 ```Clojure
 (cavy/get)    ; downloads missing resources
 
-(cavy/verify) ; check the downloaded resources' hash
+(cavy/verify) ; checks the downloaded resources' hash
 
-(cavy/clean)  ; remove the download directory
+(cavy/clean)  ; removes the download directory
 ```
+
+To call above functions quietly, use `without-print` macro.
+
+```Clojure
+(without-print (get))
+```
+
+### Resource access
 
 You do not need to remember the downloaded resources' paths any more.
 `cavy.core/resource` returns the path to the resource from the specified resource id.
@@ -38,7 +50,7 @@ It returns `nil` when the id is not defined.
 ```Clojure
 (cavy/resource "resource1") ; returns ".cavy/resource1"
 
-(cavy/resource "undefined") ; return nil
+(cavy/resource "undefined") ; returns nil
 ```
 
 ## With clojure.test
@@ -83,7 +95,6 @@ It returns `nil` when the id is not defined.
 
 ## License
 
-Copyright © 2014 FIXME
+Copyright © 2014 Toshiki TAKEUCHI
 
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
+Distributed under the Eclipse Public License either version 1.0 or any later version.
