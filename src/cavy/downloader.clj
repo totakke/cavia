@@ -14,8 +14,11 @@
                 "| " percentage "%"))))
 
 (defn http-download!
-  [url f]
-  (let [response (client/get url {:as :stream})
+  [url f & {:keys [auth]}]
+  (let [option (merge {:as :stream}
+                      (if-let [{:keys [type user password]} auth]
+                        {(keyword (str (name type) "-auth")) [user password]}))
+        response (client/get url option)
         content-len (Integer. (get-in response [:headers "content-length"]))
         is (:body response)
         data (byte-array 1024)]

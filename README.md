@@ -17,7 +17,8 @@ First, load `cavy.core` and prepare resources' information with `defcavy` macro.
                 :sha1 "1234567890abcdefghijklmnopqrstuvwxyz1234"}
                {:id "resource2"
                 :url "http://example.com/resource2"
-                :sha1 "234567890abcdefghijklmnopqrstuvwxyz12345"}]
+                :sha1 "234567890abcdefghijklmnopqrstuvwxyz12345"
+                :auth {:type :basic, :user "user", :password "password"}]
    :download-to ".cavy"})
 ```
 

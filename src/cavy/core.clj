@@ -114,13 +114,13 @@
 ;;;
 
 (defn- get* [resource download-to]
-  (let [{:keys [id url sha1]} resource
+  (let [{:keys [id url sha1 auth]} resource
         f (str download-to "/" id)
         download-f (str f ".download")
         unverified-f (str f ".unverified")]
     (when *verbose*
       (println (str "Retrieving " id " from " url)))
-    (dl/http-download! url download-f)
+    (dl/http-download! url download-f :auth auth)
     (fs/rename download-f unverified-f)
     (let [act-sha1 (sha1-file unverified-f)]
       (if (= act-sha1 sha1)
