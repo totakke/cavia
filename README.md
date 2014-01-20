@@ -12,13 +12,20 @@ First, load `cavy.core` and prepare resources' information with `defcavy` macro.
 (require '[cavy.core :as cavy :refer [defcavy]])
 
 (defcavy mycavy
-  {:resources [{:id "resource1"
+  {:resources [;; Simple HTTP
+               {:id "resource1"
                 :url "http://example.com/resource1"
                 :sha1 "1234567890abcdefghijklmnopqrstuvwxyz1234"}
+               ;; Basic authorization
                {:id "resource2"
                 :url "http://example.com/resource2"
                 :sha1 "234567890abcdefghijklmnopqrstuvwxyz12345"
-                :auth {:type :basic, :user "user", :password "password"}]
+                :auth {:type :basic, :user "user", :password "password"}}
+               ;; FTP
+               {:id "resource3"
+                :url "ftp://example.com/resource3"
+                :sha1 "34567890abcdefghijklmnopqrstuvwxyz123456"
+                :auth {:user "user", :password "password"}}]
    :download-to ".cavy"})
 ```
 
