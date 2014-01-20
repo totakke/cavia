@@ -4,7 +4,9 @@
             [me.raynes.fs :as fs]
             [pandect.core :refer [sha1-file]]
             [cavy.common :refer :all]
-            [cavy.downloader :as dl]))
+            [cavy.downloader :as dl]
+            [cavy.util :as util])
+  (:import java.net.MalformedURLException))
 
 ;;;
 ;;; Profile
@@ -120,7 +122,10 @@
         unverified-f (str f ".unverified")]
     (when *verbose*
       (println (str "Retrieving " id " from " url)))
-    (dl/http-download! url download-f :auth auth)
+    (condp #(%1 %2) (util/protocol-of url)
+      #{:http :https} (dl/http-download! url download-f :auth auth)
+      #{:ftp} (dl/ftp-download! url download-f :auth auth)
+      (throw (MalformedURLException. "Unsupported protocol")))
     (fs/rename download-f unverified-f)
     (let [act-sha1 (sha1-file unverified-f)]
       (if (= act-sha1 sha1)

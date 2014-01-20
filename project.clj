@@ -6,4 +6,6 @@
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [me.raynes/fs "1.4.5"]
                  [pandect "0.3.0"]
-                 [clj-http "0.7.8"]])
+                 [clj-http "0.7.8"]
+                 [com.velisco/clj-ftp "0.3.0"]
+                 [clojurewerkz/urly "1.0.0"]])
