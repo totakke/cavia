@@ -36,17 +36,17 @@ The last `defcavy` will be used on all cavy functions.
 cavy provides some functions for manage resources.
 
 ```Clojure
-(cavy/get)    ; downloads missing resources
+(cavy/get!)   ; downloads missing resources
 
 (cavy/verify) ; checks the downloaded resources' hash
 
-(cavy/clean)  ; removes the download directory
+(cavy/clean!) ; removes the download directory
 ```
 
 To call above functions quietly, use `without-print` macro.
 
 ```Clojure
-(without-print (get))
+(cavy/without-print (cavy/get))
 ```
 
 ### Resource access
@@ -74,7 +74,7 @@ It returns `nil` when the id is not defined.
                 :sha1 "1234567890abcdefghijklmnopqrstuvwxyz1234"}]})
 
 (defn fixture-cavy [f]
-  (cavy/get)
+  (cavy/get!)
   (f))
 
 (use-fixtures :once fixture-cavy)
@@ -96,7 +96,7 @@ It returns `nil` when the id is not defined.
                 :url "http://example.com/resource1"
                 :sha1 "1234567890abcdefghijklmnopqrstuvwxyz1234"}]})
 
-(with-state-changes [(before :facts (cavy/get))]
+(with-state-changes [(before :facts (cavy/get!))]
   (fact "tests for a large file" :slow
     (slurp (cavy/resource "resource1") => "resource1's content")))
 ```
