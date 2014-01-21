@@ -91,7 +91,11 @@
   ([id expect-hash actual-hash]
      (println (str "Invalid hash: " id))
      (println (str "  Expected: " expect-hash))
-     (println (str "    Actual: " actual-hash))))
+     (println (str "  Actual: " actual-hash))))
+
+(defn- print-missing-alert
+  [id]
+  (println (str "Missing: " id)))
 
 (defn valid?
   "Returns true if the resource's real hash is same as the defined hash. "
@@ -112,31 +116,32 @@
     (and (exist-unverified? id) (= (sha1-file f) sha1))))
 
 (defn verify
-  "Checks hash of the downloaded resource. "
-  ([] (let [{:keys [resources download-to]} @cavy-profile]
-        (doseq [{:keys [id sha1]} resources]
-          (let [act-sha1 (sha1-file (resource id))]
-            (when-not (= act-sha1 sha1)
-              (print-hash-alert id sha1 act-sha1))))))
-  ([id] (if (exist? id)
-          (when-not (valid? id)
-            (print-hash-alert id))
-          (when (valid-unverified? id)
-            (fs/rename (resource-unverified id) (resource id))
-            (when *verbose*
-              (println (str "Verified " id)))))))
+  "Checks existence and hash of the downloaded resource, printing alert message
+  when the resource does not exist or the hash is invalid."
+  ([]
+     (doseq [{:keys [id]} (:resources @cavy-profile)]
+       (verify id)))
+  ([id]
+     (if (exist? id)
+       (when-not (valid? id)
+         (print-hash-alert id))
+       (print-missing-alert id))))
 
 ;;;
 ;;; Clean
 ;;;
 
-(defn clean
+(defn clean!
   "Removes the specified resource or the download directory."
   ([] (let [{:keys [download-to]} @cavy-profile]
         (fs/delete-dir download-to))
      nil)
   ([id] (fs/delete (resource id))
      nil))
+
+(defn ^:deprecated clean
+  ([] (clean!))
+  ([id] (clean! id)))
 
 ;;;
 ;;; Download
@@ -159,15 +164,22 @@
         (fs/rename unverified-f f)
         (print-hash-alert id sha1 act-sha1)))))
 
-(defn get
+(defn get!
   "Downloads missing resources to the local directory."
   []
   (let [{:keys [resources download-to]} @cavy-profile]
     (when-not (fs/directory? download-to)
       (fs/mkdir download-to))
     (doseq [r resources]
-      (cond
-       (valid? (:id r)) (when *verbose*
-                          (println "Already downloaded: " (:id r)))
-       (valid-unverified? (:id r)) (verify (:id r))
-       :else (get* r download-to)))))
+      (let [id (:id r)]
+       (cond
+        (valid? id) (when *verbose*
+                      (println "Already downloaded: " id))
+        (valid-unverified? id) (do (fs/rename (resource-unverified id) (resource id))
+                                   (when *verbose*
+                                     (println (str "Verified " id))))
+        :else (get* r download-to))))))
+
+(defn ^:deprecated get
+  []
+  (get!))
