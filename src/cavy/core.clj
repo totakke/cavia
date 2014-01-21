@@ -20,6 +20,21 @@
   (reset! cavy-profile profile))
 
 (defmacro defcavy
+  "Defines a cavy profile. The last defcavy will be used on all cavy functions.
+  e.g.:
+    (defcavy mycavy
+      {:resources [{:id \"resource1\"
+                    :url \"http://example.com/resource1\"
+                    :sha1 \"1234567890abcdefghijklmnopqrstuvwxyz1234\"}
+                   {:id \"resource2\"
+                    :url \"http://example.com/resource2\"
+                    :sha1 \"234567890abcdefghijklmnopqrstuvwxyz12345\"
+                    :auth {:type :basic, :user \"user\", :password \"password\"}}
+                   {:id \"resource3\"
+                    :url \"ftp://example.com/resource3\"
+                    :sha1 \"34567890abcdefghijklmnopqrstuvwxyz123456\"
+                    :auth {:user \"user\", :password \"password\"}}]
+      :download-to \".cavy\"})"
   [name profile]
   `(let [profile# (merge default-profile ~profile)]
      (def ~name profile#)
@@ -29,7 +44,10 @@
 ;;; Verbosity
 ;;;
 
-(defmacro without-print [& body]
+(defmacro without-print
+  "Restrains printing log, progress, and other messages. Take care that it does
+  not restrain error and warning messages."
+  [& body]
   `(binding [*verbose* false]
      ~@body))
 
@@ -37,7 +55,10 @@
 ;;; Access
 ;;;
 
-(defn resource [id]
+(defn resource
+  "Returns the local path of the specified resource. Returns nil if the resource
+  is not defined in your defcavy."
+  [id]
   (let [{:keys [resources download-to]} @cavy-profile]
     (if-let [r (first (filter #(= (:id %) id) resources))]
       (str download-to "/" (:id r)))))
@@ -45,7 +66,9 @@
 (defn- resource-unverified [id]
   (str (resource id) ".unverified"))
 
-(defn exist? [id]
+(defn exist?
+  "Returns true if the specified resource exists on local."
+  [id]
   (let [f (resource id)]
     (and (not (nil? f)) (fs/file? f))))
 
@@ -70,7 +93,9 @@
      (println (str "  Expected: " expect-hash))
      (println (str "    Actual: " actual-hash))))
 
-(defn valid? [id]
+(defn valid?
+  "Returns true if the resource's real hash is same as the defined hash. "
+  [id]
   (let [sha1 (->> (:resources @cavy-profile)
                   (filter #(= (:id %) id))
                   (first)
@@ -87,6 +112,7 @@
     (and (exist-unverified? id) (= (sha1-file f) sha1))))
 
 (defn verify
+  "Checks hash of the downloaded resource. "
   ([] (let [{:keys [resources download-to]} @cavy-profile]
         (doseq [{:keys [id sha1]} resources]
           (let [act-sha1 (sha1-file (resource id))]
@@ -105,6 +131,7 @@
 ;;;
 
 (defn clean
+  "Removes the specified resource or the download directory."
   ([] (let [{:keys [download-to]} @cavy-profile]
         (fs/delete-dir download-to))
      nil)
@@ -133,6 +160,7 @@
         (print-hash-alert id sha1 act-sha1)))))
 
 (defn get
+  "Downloads missing resources to the local directory."
   []
   (let [{:keys [resources download-to]} @cavy-profile]
     (when-not (fs/directory? download-to)
