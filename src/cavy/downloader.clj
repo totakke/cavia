@@ -46,7 +46,7 @@
                     (str user ":" password "@" (urly/host-of u))
                     (urly/authority-of u)))
         path (urly/path-of u)]
-    (ftp/with-ftp [ftp-client host]
+    (ftp/with-ftp [ftp-client host :file-type :binary]
       (let [is (ftp/client-get-stream ftp-client path)
             data (byte-array 1024)]
         (with-open [w (io/output-stream f)]
@@ -59,4 +59,6 @@
               (let [len (.read is data)]
                 (recur len (+ sum len)))))
           (when *verbose*
-            (println)))))))
+            (println)))
+        (.close is)
+        (ftp/client-complete-pending-command ftp-client)))))
