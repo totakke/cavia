@@ -47,14 +47,15 @@
                     (urly/authority-of u)))
         path (urly/path-of u)]
     (ftp/with-ftp [ftp-client host :file-type :binary]
-      (let [is (ftp/client-get-stream ftp-client path)
+      (let [content-len (.. ftp-client (mlistFile path) getSize)
+            is (ftp/client-get-stream ftp-client path)
             data (byte-array 1024)]
         (with-open [w (io/output-stream f)]
           (loop [len (.read is data)
                  sum len]
             (when-not (= len -1)
-              ;; (when *verbose*
-              ;;   (print-progress sum content-len))
+              (when *verbose*
+                (print-progress sum content-len))
               (.write w data 0 len)
               (let [len (.read is data)]
                 (recur len (+ sum len)))))
