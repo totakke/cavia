@@ -5,7 +5,7 @@
             [miner.ftp :as ftp]
             [clojurewerkz.urly.core :as urly]
             [cavy.common :refer :all])
-  (:import java.io.FilterInputStream))
+  (:import [java.io InputStream OutputStream]))
 
 (defn- print-progress
   [now total]
@@ -17,28 +17,38 @@
                               (repeat 50 nil)))
                 "| " percentage "%"))))
 
+(def ^:private download-buffer-size 1024)
+
+(defn- download!
+  "Downloads from the InputStream to the OutputStream. To print progress, it
+  requires the content length."
+  [^InputStream is ^OutputStream os content-len]
+  (let [data (byte-array download-buffer-size)]
+    (loop [len (.read is data)
+           sum len]
+      (when-not (= len -1)
+        (when *verbose*
+          (print-progress sum content-len))
+        (.write os data 0 len)
+        (let [len (.read is data)]
+          (recur len (+ sum len))))))
+  (when *verbose*
+    (println)))
+
 (defn http-download!
+  "Downloads from the url via HTTP/HTTPS and saves it to local as f."
   [url f & {:keys [auth]}]
   (let [option (merge {:as :stream}
                       (if-let [{:keys [type user password]} auth]
                         {(keyword (str (name type) "-auth")) [user password]}))
         response (client/get url option)
         content-len (Integer. ^String (get-in response [:headers "content-length"]))
-        is ^FilterInputStream (:body response)
-        data (byte-array 1024)]
-    (with-open [w (io/output-stream f)]
-      (loop [len (.read is data)
-             sum len]
-        (when-not (= len -1)
-          (when *verbose*
-            (print-progress sum content-len))
-          (.write w data 0 len)
-          (let [len (.read is data)]
-            (recur len (+ sum len)))))
-      (when *verbose*
-        (println)))))
+        is (:body response)]
+    (with-open [os (io/output-stream f)]
+      (download! is os content-len))))
 
 (defn ftp-download!
+  "Downloads from the url via FTP and saves it to local as f."
   [url f & {:keys [auth]}]
   (let [u (urly/url-like url)
         host (str (urly/protocol-of u) "://"
@@ -48,18 +58,8 @@
         path (urly/path-of u)]
     (ftp/with-ftp [ftp-client host :file-type :binary]
       (let [content-len (.. ftp-client (mlistFile path) getSize)
-            is (ftp/client-get-stream ftp-client path)
-            data (byte-array 1024)]
-        (with-open [w (io/output-stream f)]
-          (loop [len (.read is data)
-                 sum len]
-            (when-not (= len -1)
-              (when *verbose*
-                (print-progress sum content-len))
-              (.write w data 0 len)
-              (let [len (.read is data)]
-                (recur len (+ sum len)))))
-          (when *verbose*
-            (println)))
+            is (ftp/client-get-stream ftp-client path)]
+        (with-open [os (io/output-stream f)]
+          (download! is os content-len))
         (.close is)
         (ftp/client-complete-pending-command ftp-client)))))

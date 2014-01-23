@@ -46,7 +46,7 @@ cavy provides some functions for manage resources.
 To call above functions quietly, use `without-print` macro.
 
 ```Clojure
-(cavy/without-print (cavy/get))
+(cavy/without-print (cavy/get!))
 ```
 
 ### Resource access
