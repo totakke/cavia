@@ -63,9 +63,18 @@
                     (urly/authority-of u)))
         path (urly/path-of u)]
     (ftp/with-ftp [ftp-client host :file-type :binary]
+      (.setSoTimeout ftp-client 30000)
+      (.setDataTimeout ftp-client 30000)
       (let [content-len (.. ftp-client (mlistFile path) getSize)
             is (ftp/client-get-stream ftp-client path)]
         (with-open [os (io/output-stream f)]
           (download! is os content-len))
         (.close is)
-        (ftp/client-complete-pending-command ftp-client)))))
+        (try
+          (ftp/client-complete-pending-command ftp-client)
+          (catch java.net.SocketTimeoutException e
+            ;; NOTE: `client-complete-pending-command` sometimes hangs after
+            ;;       downloading a large file. But the file is fine and the
+            ;;       downloading process succeded to finish. Therefore here
+            ;;       ignores the timeout.
+            nil))))))

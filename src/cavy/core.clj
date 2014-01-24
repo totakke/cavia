@@ -5,8 +5,7 @@
             [pandect.core :refer [sha1-file]]
             [cavy.common :refer :all]
             [cavy.downloader :as dl]
-            [cavy.util :as util])
-  (:import java.net.MalformedURLException))
+            [cavy.util :as util]))
 
 ;;;
 ;;; Profile
@@ -157,7 +156,7 @@
     (condp #(%1 %2) (util/protocol-of url)
       #{:http :https} (dl/http-download! url download-f :auth auth)
       #{:ftp} (dl/ftp-download! url download-f :auth auth)
-      (throw (MalformedURLException. "Unsupported protocol")))
+      (throw (java.net.MalformedURLException. "Unsupported protocol")))
     (fs/rename download-f unverified-f)
     (let [act-sha1 (sha1-file unverified-f)]
       (if (= act-sha1 sha1)
@@ -174,7 +173,7 @@
       (let [id (:id r)]
        (cond
         (valid? id) (when *verbose*
-                      (println "Already downloaded: " id))
+                      (println (str "Already downloaded: " id)))
         (valid-unverified? id) (do (fs/rename (resource-unverified id) (resource id))
                                    (when *verbose*
                                      (println (str "Verified " id))))
