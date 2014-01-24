@@ -7,15 +7,20 @@
             [cavy.common :refer :all])
   (:import [java.io InputStream OutputStream]))
 
+(def ^:private printed-percentage (atom -1))
+
 (defn- print-progress
   [now total]
   (let [percentage (quot (* now 100) total)]
-    (print (str "\r"
-                (string/join
-                 (map-indexed (fn [idx _]
-                                (if (< idx (quot percentage (quot 100 50))) \# \space))
-                              (repeat 50 nil)))
-                "| " percentage "%"))))
+    (when-not (= percentage @printed-percentage)
+      (print (str "\r"
+                  (string/join
+                   (map-indexed (fn [idx _]
+                                  (if (< idx (quot percentage 2)) \# \space))
+                                (repeat 50 nil)))
+                  "| " percentage "%"))
+      (flush)
+      (reset! printed-percentage percentage))))
 
 (def ^:private download-buffer-size 1024)
 
@@ -32,8 +37,9 @@
         (.write os data 0 len)
         (let [len (.read is data)]
           (recur len (+ sum len))))))
+  (reset! printed-percentage -1)
   (when *verbose*
-    (println)))
+    (newline)))
 
 (defn http-download!
   "Downloads from the url via HTTP/HTTPS and saves it to local as f."
