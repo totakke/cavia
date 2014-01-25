@@ -22,13 +22,11 @@
       (flush)
       (reset! printed-percentage percentage))))
 
-(def ^:private download-buffer-size 1024)
-
 (defn- download!
   "Downloads from the InputStream to the OutputStream. To print progress, it
   requires the content length."
   [^InputStream is ^OutputStream os content-len]
-  (let [data (byte-array download-buffer-size)]
+  (let [data (byte-array *download-buffer-size*)]
     (loop [len (.read is data)
            sum len]
       (when-not (= len -1)
