@@ -1,6 +1,6 @@
 (defproject cavy "0.1.0-SNAPSHOT"
-  :description "Test resources manager for Clojure"
-  :url "http://example.com/FIXME"
+  :description "A test resources manager for Clojure"
+  :url "https://github.com/FIXME/cavy"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]

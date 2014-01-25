@@ -22,14 +22,14 @@
   "Defines a cavy profile. The last defcavy will be used on all cavy functions.
   e.g.:
     (defcavy mycavy
-      {:resources [{:id \"resource1\"
+      {:resources [{:id :resource1
                     :url \"http://example.com/resource1\"
                     :sha1 \"1234567890abcdefghijklmnopqrstuvwxyz1234\"}
-                   {:id \"resource2\"
+                   {:id :resource2
                     :url \"http://example.com/resource2\"
                     :sha1 \"234567890abcdefghijklmnopqrstuvwxyz12345\"
                     :auth {:type :basic, :user \"user\", :password \"password\"}}
-                   {:id \"resource3\"
+                   {:id :resource3
                     :url \"ftp://example.com/resource3\"
                     :sha1 \"34567890abcdefghijklmnopqrstuvwxyz123456\"
                     :auth {:user \"user\", :password \"password\"}}]
@@ -56,11 +56,15 @@
 
 (defn resource
   "Returns the local path of the specified resource. Returns nil if the resource
-  is not defined in your defcavy."
+  is not defined in your defcavy. Take care that this function will return the
+  path even if the defiend resource is not downloaded."
   [id]
   (let [{:keys [resources download-to]} @cavy-profile]
-    (if-let [r (first (filter #(= (:id %) id) resources))]
-      (str download-to "/" (:id r)))))
+    (if-let [id* (->> resources
+                      (filter #(= (:id %) id))
+                      (first)
+                      (:id))]
+      (str download-to "/" (name id*)))))
 
 (defn- resource-unverified [id]
   (str (resource id) ".unverified"))
@@ -146,9 +150,8 @@
 ;;; Download
 ;;;
 
-(defn- get* [resource download-to]
-  (let [{:keys [id url sha1 auth]} resource
-        f (str download-to "/" id)
+(defn- get* [{:keys [id url sha1 auth]} download-to]
+  (let [f (resource id)
         download-f (str f ".download")
         unverified-f (str f ".unverified")]
     (when *verbose*
