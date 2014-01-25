@@ -71,11 +71,11 @@ To call above functions quietly, use `without-print` macro.
 ### Resource access
 
 You do not need to remember the downloaded resources' paths any more.
-`cavy.core/resource` returns the path to the resource from the specified resource id.
+`cavy.core/resource` returns the absolute path to the resource from the specified resource id.
 It returns `nil` when the id is not defined.
 
 ```Clojure
-(cavy/resource :resource1) ; returns ".cavy/resource1"
+(cavy/resource :resource1) ; returns "/home/totakke/cavy-example/.cavy/resource1"
 
 (cavy/resource :undefined) ; returns nil
 ```

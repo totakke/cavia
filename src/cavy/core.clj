@@ -64,7 +64,10 @@
                       (filter #(= (:id %) id))
                       (first)
                       (:id))]
-      (str download-to "/" (name id*)))))
+      (fs/absolute-path (str download-to "/" (name id*))))))
+
+(defn- resource-download [id]
+  (str (resource id) ".download"))
 
 (defn- resource-unverified [id]
   (str (resource id) ".unverified"))
@@ -152,18 +155,18 @@
 
 (defn- get* [{:keys [id url sha1 auth]} download-to]
   (let [f (resource id)
-        download-f (str f ".download")
-        unverified-f (str f ".unverified")]
+        dl-f (resource-download id)
+        uv-f (resource-unverified id)]
     (when *verbose*
       (println (str "Retrieving " id " from " url)))
     (condp #(%1 %2) (util/protocol-of url)
-      #{:http :https} (dl/http-download! url download-f :auth auth)
-      #{:ftp} (dl/ftp-download! url download-f :auth auth)
+      #{:http :https} (dl/http-download! url dl-f :auth auth)
+      #{:ftp} (dl/ftp-download! url dl-f :auth auth)
       (throw (java.net.MalformedURLException. "Unsupported protocol")))
-    (fs/rename download-f unverified-f)
-    (let [act-sha1 (sha1-file unverified-f)]
+    (fs/rename dl-f uv-f)
+    (let [act-sha1 (sha1-file uv-f)]
       (if (= act-sha1 sha1)
-        (fs/rename unverified-f f)
+        (fs/rename uv-f f)
         (print-hash-alert id sha1 act-sha1)))))
 
 (defn get!
