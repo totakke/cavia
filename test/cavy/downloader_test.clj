@@ -2,6 +2,7 @@
   (:require [clojure.test :refer :all]
             [clojure.java.io :refer [file]]
             [pandect.core :refer [sha1-file]]
+            [cavy.core :refer [without-print]]
             [cavy.downloader :as dl]))
 
 ;;;
@@ -22,7 +23,8 @@
 
 (defn fixture [f]
   (prepare-cache!)
-  (f)
+  (without-print
+   (f))
   (clean-cache!))
 
 (use-fixtures :once fixture)
