@@ -1,8 +1,9 @@
 (ns cavy.core-test
   (:require [clojure.test :refer :all]
-            [cavy.core :as cavy :refer [defcavy without-print]]))
+            [cavy.test-util :refer :all]
+            [cavy.core :as cavy :refer [defprofile with-profile without-print]]))
 
-(defcavy test-cavy
+(defprofile test-prof
   {:resources [{:id :test-resource
                 :url "http://clojure.org/space/showimage/clojure-icon.gif"
                 :sha1 "f21616d75dc27dd2b89fcdef04177976a5d404c4"}
@@ -15,11 +16,12 @@
 ;;;
 
 (defn fixture-cavy [f]
-  (without-print
-   (cavy/clean)
-   (cavy/get)
-   (f)
-   (cavy/clean)))
+  (with-out-null
+   (with-profile test-prof
+     (cavy/clean!)
+     (cavy/get!)
+     (f)
+     (cavy/clean!))))
 
 (use-fixtures :once fixture-cavy)
 

@@ -2,30 +2,18 @@
   (:require [clojure.test :refer :all]
             [clojure.java.io :refer [file]]
             [pandect.core :refer [sha1-file]]
-            [cavy.core :refer [without-print]]
+            [cavy.test-util :refer :all]
             [cavy.downloader :as dl]))
 
 ;;;
 ;;; Setup and teardown
 ;;;
 
-(def temp-dir (.getPath (file (System/getProperty "java.io.tmpdir") "cavy-test")))
-
-(defn- prepare-cache! []
-  (.mkdir (file temp-dir)))
-
-(defn- clean-cache! []
-  (let [dir (file temp-dir)]
-    (when (.exists dir)
-      (doseq [f (seq (.list dir))]
-        (.delete (file (str temp-dir "/" f))))
-      (.delete dir))))
-
 (defn fixture [f]
-  (prepare-cache!)
-  (without-print
-   (f))
-  (clean-cache!))
+  (with-out-null
+    (prepare-cache!)
+    (f)
+    (clean-cache!)))
 
 (use-fixtures :once fixture)
 
