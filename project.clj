@@ -1,4 +1,4 @@
-(defproject cavy "0.1.0-SNAPSHOT"
+(defproject cavy "0.1.1-SNAPSHOT"
   :description "A test resources manager for Clojure"
   :url "https://github.com/FIXME/cavy"
   :license {:name "Eclipse Public License"
