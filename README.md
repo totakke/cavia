@@ -1,8 +1,17 @@
 # cavia
 
-cavia is a manager library for test resources.
+**cavia** is a manager library for test resources in a Clojure project.
 
 [![Build Status](https://travis-ci.org/totakke/cavia.png?branch=master)](https://travis-ci.org/totakke/cavia)
+
+In some cases, tests of a project require large-size files. Codes for parser,
+I/O, etc. should be tested by various kinds of files. But generally, SCM is not
+good for controlling such large test files. One of the solutions is using another
+tools like git-annex. Some Clojurians, however, may think that they want to
+solve it in the Clojure ecosystem. cavia is useful for such developers. cavia is
+written by Clojure, so it can be directly used in a project and source codes.
+cavia downloads test resources from remotes and checks their hash before tests,
+and provides convenience functions to access the resources.
 
 ## Installation
 
@@ -41,13 +50,15 @@ First, load `cavia.core` and prepare resources' information with `defprofile` ma
    :download-to ".cavia"})
 ```
 
-Resources are defined in `:resources`.
-Each resource must have `:id :url :sha1` fields. These fields are mandatory.
+Resources are defined in `:resources` as a vector including some maps.
+Each resource map must have `:id :url :sha1` fields. These fields are mandatory.
 `:id` should be specified as keyword or string. It is used for resource access
 and downloading file name.
 `:auth` field is optional. It can be used for password authentication.
-
 cavia is now supporting HTTP/HTTPS/FTP protocols and Basic/Digest authentications.
+
+cavia downloads resources to `:download-to` directory. The default location is
+`./.cavia`. Thus maybe you should add `/.cavia` to your `.gitignore`.
 
 ### Resource management
 
@@ -69,6 +80,7 @@ To call cavia functions without the profile specification, use `with-profile` ma
   (cavia/get!))
 ```
 
+`get!` and other functions output progress and logs' print to stdout.
 To call above functions quietly, use `without-print` macro.
 
 ```Clojure
