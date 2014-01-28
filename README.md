@@ -2,6 +2,8 @@
 
 cavia is a manager library for test resources.
 
+[![Build Status](https://travis-ci.org/totakke/cavia.png?branch=master)](https://travis-ci.org/totakke/cavia)
+
 ## Installation
 
 cavia is available as a Maven artifact from [Clojars][clojars].
