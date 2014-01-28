@@ -2,16 +2,14 @@
 
 cavy is a manager library for test resources.
 
-Sometimes ...TODO
-
 ## Installation
 
-cavy is available asa a Maven artifact from [Clojars][clojars].
+cavy is available as a Maven artifact from [Clojars][clojars].
 
 To use with Leiningen, add the following dependency.
 
 ```Clojure
-[cavy "0.1.0"]
+[cavy "0.1.1"]
 ```
 
 ## Usage
@@ -43,9 +41,11 @@ First, load `cavy.core` and prepare resources' information with `defprofile` mac
 
 Resources are defined in `:resources`.
 Each resource must have `:id :url :sha1` fields. These fields are mandatory.
-...TODO
+`:id` should be specified as keyword or string. It is used for resource access
+and downloading file name.
+`:auth` field is optional. It can be used for password authentication.
 
-cavy now supports HTTP/HTTPS/FTP protocols and Basic/Digest authentications.
+cavy is now supporting HTTP/HTTPS/FTP protocols and Basic/Digest authentications.
 
 ### Resource management
 
@@ -63,7 +63,7 @@ To call cavy functions without the profile specification, use `with-profile` mac
 
 ```Clojure
 (with-profile prof
-  (cavy/clean)
+  (cavy/clean!)
   (cavy/get!))
 ```
 
@@ -139,7 +139,18 @@ It is good to use cavy with test frameworks like clojure.test, [Midje][midje], e
 
 Copyright © 2014 Toshiki TAKEUCHI
 
-Distributed under the Eclipse Public License either version 1.0 or any later version.
+Distributed under the Eclipse Public License version 1.0.
 
-[clojars]: https://clojars.org/FIXME
+## Special thanks
+
+cavy was developed for tests of [Chrovis][chrovis].
+Chrovis is a cloud service of genome analysis and visualization for researchers.
+Chrovis is directed by [Xcoo, Inc.][xcoo].
+
+* Xcoo: http://www.xcoo.jp/
+* Chrovis: https://chrov.is/
+
+[clojars]: https://clojars.org/cavy
 [midje]: https://github.com/marick/Midje
+[xcoo]: http://www.xcoo.jp/
+[chrovis]: https://chrov.is/
