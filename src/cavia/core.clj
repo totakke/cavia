@@ -1,16 +1,16 @@
-(ns cavy.core
+(ns cavia.core
   (:refer-clojure :exclude [get])
   (:require [clojure.java.io :as io]
             [me.raynes.fs :as fs]
             [pandect.core :refer [sha1-file]]
-            [cavy.common :refer :all]
-            [cavy.downloader :as dl]
-            [cavy.util :as util]))
+            [cavia.common :refer :all]
+            [cavia.downloader :as dl]
+            [cavia.util :as util]))
 
-(def skeleton-profile {:download-to ".cavy"})
+(def skeleton-profile {:download-to ".cavia"})
 
 (defmacro defprofile
-  "Defines a cavy profile. The last defcavy will be used on all cavy functions.
+  "Defines a cavia profile. The last defcavia will be used on all cavia functions.
   e.g.:
     (defprofile prof
       {:resources [{:id :resource1
@@ -24,7 +24,7 @@
                     :url \"ftp://example.com/resource3\"
                     :sha1 \"34567890abcdefghijklmnopqrstuvwxyz123456\"
                     :auth {:user \"user\", :password \"password\"}}]
-      :download-to \".cavy\"})"
+      :download-to \".cavia\"})"
   [name profile]
   `(let [profile# (merge skeleton-profile ~profile)]
      (def ~name (with-meta profile# {:tag ::Profile}))))
@@ -68,7 +68,7 @@
 
 (defmulti resource
   "Returns the local path of the specified resource. Returns nil if the resource
-  is not defined in your defcavy. Take care that this function will return the
+  is not defined in your defcavia. Take care that this function will return the
   path even if the defiend resource is not downloaded."
   meta-tag)
 

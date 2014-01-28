@@ -1,4 +1,4 @@
-(ns cavy.util
+(ns cavia.util
   (:require [clojurewerkz.urly.core :as urly]))
 
 (defn protocol-of

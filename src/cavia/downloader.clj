@@ -1,10 +1,10 @@
-(ns cavy.downloader
+(ns cavia.downloader
   (:require [clojure.string :as string]
             [clojure.java.io :as io]
             [clj-http.client :as client]
             [miner.ftp :as ftp]
             [clojurewerkz.urly.core :as urly]
-            [cavy.common :refer :all])
+            [cavia.common :refer :all])
   (:import [java.io InputStream OutputStream]))
 
 (def ^:private printed-percentage (atom -1))

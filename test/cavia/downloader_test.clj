@@ -1,9 +1,9 @@
-(ns cavy.downloader-test
+(ns cavia.downloader-test
   (:require [clojure.test :refer :all]
             [clojure.java.io :refer [file]]
             [pandect.core :refer [sha1-file]]
-            [cavy.test-util :refer :all]
-            [cavy.downloader :as dl]))
+            [cavia.test-util :refer :all]
+            [cavia.downloader :as dl]))
 
 ;;;
 ;;; Setup and teardown

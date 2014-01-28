@@ -1,7 +1,7 @@
-(ns cavy.core-test
+(ns cavia.core-test
   (:require [clojure.test :refer :all]
-            [cavy.test-util :refer :all]
-            [cavy.core :as cavy :refer [defprofile with-profile without-print]]))
+            [cavia.test-util :refer :all]
+            [cavia.core :as cavia :refer [defprofile with-profile without-print]]))
 
 (defprofile test-prof
   {:resources [{:id :test-resource
@@ -15,15 +15,15 @@
 ;;; Setup and teardown
 ;;;
 
-(defn fixture-cavy [f]
+(defn fixture-cavia [f]
   (with-out-null
    (with-profile test-prof
-     (cavy/clean!)
-     (cavy/get!)
+     (cavia/clean!)
+     (cavia/get!)
      (f)
-     (cavy/clean!))))
+     (cavia/clean!))))
 
-(use-fixtures :once fixture-cavy)
+(use-fixtures :once fixture-cavia)
 
 ;;;
 ;;; Tests
@@ -31,18 +31,18 @@
 
 (deftest resource-test
   (testing "returns the resource's path"
-    (is (not (nil? (re-find #".*\.cavy/test-resource$" (cavy/resource :test-resource))))))
+    (is (not (nil? (re-find #".*\.cavia/test-resource$" (cavia/resource :test-resource))))))
   (testing "returns nil when the id does not exist"
-    (is (nil? (cavy/resource :notexist)))))
+    (is (nil? (cavia/resource :notexist)))))
 
 (deftest exist?-test
   (testing "returns true if the file is already downloaded"
-    (is (cavy/exist? :test-resource)))
+    (is (cavia/exist? :test-resource)))
   (testing "returns false if the file is not downloaded"
-    (is (not (cavy/exist? :test-resource2)))))
+    (is (not (cavia/exist? :test-resource2)))))
 
 (deftest valid?-test
   (testing "returns true if the file's hash is valid"
-    (is (cavy/valid? :test-resource)))
+    (is (cavia/valid? :test-resource)))
   (testing "returns false if the file's hash is invalid"
-    (is (not (cavy/valid? :test-resource2)))))
+    (is (not (cavia/valid? :test-resource2)))))

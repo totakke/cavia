@@ -1,4 +1,4 @@
-(ns cavy.test-util
+(ns cavia.test-util
   (:require [clojure.java.io :as io]))
 
 (defmacro with-out-null
@@ -6,7 +6,7 @@
   `(binding [*out* (io/writer "/dev/null")]
      ~@body))
 
-(def temp-dir (.getPath (io/file (System/getProperty "java.io.tmpdir") "cavy-test")))
+(def temp-dir (.getPath (io/file (System/getProperty "java.io.tmpdir") "cavia-test")))
 
 (defn prepare-cache! []
   (.mkdir (io/file temp-dir)))

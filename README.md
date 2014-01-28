@@ -1,25 +1,25 @@
-# cavy
+# cavia
 
-cavy is a manager library for test resources.
+cavia is a manager library for test resources.
 
 ## Installation
 
-cavy is available as a Maven artifact from [Clojars][clojars].
+cavia is available as a Maven artifact from [Clojars][clojars].
 
 To use with Leiningen, add the following dependency.
 
 ```Clojure
-[cavy "0.1.1"]
+[cavia "0.1.1"]
 ```
 
 ## Usage
 
 ### Define resources profile
 
-First, load `cavy.core` and prepare resources' information with `defprofile` macro.
+First, load `cavia.core` and prepare resources' information with `defprofile` macro.
 
 ```Clojure
-(require '[cavy.core :as cavy :refer [defprofile]])
+(require '[cavia.core :as cavia :refer [defprofile]])
 
 (defprofile prof
   {:resources [;; Simple HTTP
@@ -36,7 +36,7 @@ First, load `cavy.core` and prepare resources' information with `defprofile` mac
                 :url "ftp://example.com/resource3"
                 :sha1 "34567890abcdefghijklmnopqrstuvwxyz123456"
                 :auth {:user "user", :password "password"}}]
-   :download-to ".cavy"})
+   :download-to ".cavia"})
 ```
 
 Resources are defined in `:resources`.
@@ -45,32 +45,32 @@ Each resource must have `:id :url :sha1` fields. These fields are mandatory.
 and downloading file name.
 `:auth` field is optional. It can be used for password authentication.
 
-cavy is now supporting HTTP/HTTPS/FTP protocols and Basic/Digest authentications.
+cavia is now supporting HTTP/HTTPS/FTP protocols and Basic/Digest authentications.
 
 ### Resource management
 
-cavy provides some functions for manage resources.
+cavia provides some functions for manage resources.
 
 ```Clojure
-(cavy/get! prof)   ; downloads missing resources
+(cavia/get! prof)   ; downloads missing resources
 
-(cavy/verify prof) ; checks the downloaded resources' hash
+(cavia/verify prof) ; checks the downloaded resources' hash
 
-(cavy/clean! prof) ; removes the download directory
+(cavia/clean! prof) ; removes the download directory
 ```
 
-To call cavy functions without the profile specification, use `with-profile` macro.
+To call cavia functions without the profile specification, use `with-profile` macro.
 
 ```Clojure
 (with-profile prof
-  (cavy/clean!)
-  (cavy/get!))
+  (cavia/clean!)
+  (cavia/get!))
 ```
 
 To call above functions quietly, use `without-print` macro.
 
 ```Clojure
-(without-print (cavy/get!))
+(without-print (cavia/get!))
 ```
 
 ### Resource access
@@ -80,38 +80,38 @@ You do not need to remember the downloaded resources' paths any more.
 It returns `nil` when the id is not defined.
 
 ```Clojure
-(cavy/resource prof :resource1) ; returns "/home/totakke/cavy-example/.cavy/resource1"
+(cavia/resource prof :resource1) ; returns "/home/totakke/cavia-example/.cavia/resource1"
 
-(cavy/resource prof :undefined) ; returns nil
+(cavia/resource prof :undefined) ; returns nil
 ```
 
 ## Example usage with test frameworks
 
-cavy is a library for management of test resources.
-It is good to use cavy with test frameworks like clojure.test, [Midje][midje], etc.
+cavia is a library for management of test resources.
+It is good to use cavia with test frameworks like clojure.test, [Midje][midje], etc.
 
 ### with clojure.test
 
 ```Clojure
 (ns foo.core-test
   (:require [clojure.test :refer :all]
-            [cavy.core :as cavy :refer [defprofile with-profile]]))
+            [cavia.core :as cavia :refer [defprofile with-profile]]))
 
 (defprofile prof
   {:resources [{:id :resource1
                 :url "http://example.com/resource1"
                 :sha1 "1234567890abcdefghijklmnopqrstuvwxyz1234"}]})
 
-(defn fixture-cavy [f]
+(defn fixture-cavia [f]
   (with-profile prof
-    (cavy/get!)
+    (cavia/get!)
     (f)))
 
-(use-fixtures :once fixture-cavy)
+(use-fixtures :once fixture-cavia)
 
 (deftest your-test
-  (testing "tests with the cavy's resource"
-    (is (= (slurp (cavy/resource :resource1)) "resource1's content")))
+  (testing "tests with the cavia's resource"
+    (is (= (slurp (cavia/resource :resource1)) "resource1's content")))
 ```
 
 ### with Midje
@@ -119,7 +119,7 @@ It is good to use cavy with test frameworks like clojure.test, [Midje][midje], e
 ```Clojure
 (ns foo.t-core
   (:require [midje.sweet :refer :all]
-            [cavy.core :as cavy :refer [defprofile with-profile]]))
+            [cavia.core :as cavia :refer [defprofile with-profile]]))
 
 (defprofile prof
   {:resources [{:id :resource1
@@ -128,9 +128,9 @@ It is good to use cavy with test frameworks like clojure.test, [Midje][midje], e
 
 (with-profile prof
 
-  (with-state-changes [(before :facts (cavy/get!))]
+  (with-state-changes [(before :facts (cavia/get!))]
     (fact "tests for a large file" :slow
-      (slurp (cavy/resource :resource1) => "resource1's content")))
+      (slurp (cavia/resource :resource1) => "resource1's content")))
 
   )
 ```
@@ -143,14 +143,14 @@ Distributed under the Eclipse Public License version 1.0.
 
 ## Special thanks
 
-cavy was developed for tests of [Chrovis][chrovis].
+cavia was developed for tests of [Chrovis][chrovis].
 Chrovis is a cloud service of genome analysis and visualization for researchers.
 Chrovis is directed by [Xcoo, Inc.][xcoo].
 
 * Xcoo: http://www.xcoo.jp/
 * Chrovis: https://chrov.is/
 
-[clojars]: https://clojars.org/cavy
+[clojars]: https://clojars.org/cavia
 [midje]: https://github.com/marick/Midje
 [xcoo]: http://www.xcoo.jp/
 [chrovis]: https://chrov.is/

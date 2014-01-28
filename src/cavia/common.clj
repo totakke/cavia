@@ -1,4 +1,4 @@
-(ns cavy.common)
+(ns cavia.common)
 
 (def ^:dynamic *verbose* true)
 
