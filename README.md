@@ -58,11 +58,11 @@ and downloading file name.
 cavia is now supporting HTTP/HTTPS/FTP protocols and Basic/Digest authentications.
 
 cavia downloads resources to `:download-to` directory. The default location is
-`./.cavia`. Thus maybe you should add `/.cavia` to your `.gitignore`.
+`./.cavia`. Thus maybe you should add `/.cavia` to your SCM ignore list.
 
 ### Resource management
 
-cavia provides some functions for manage resources.
+cavia provides some functions for managing resources.
 
 ```Clojure
 (cavia/get! prof)   ; downloads missing resources
@@ -84,7 +84,8 @@ To call cavia functions without the profile specification, use `with-profile` ma
 To call above functions quietly, use `without-print` macro.
 
 ```Clojure
-(without-print (cavia/get!))
+(without-print
+  (cavia/get! prof))
 ```
 
 ### Resource access
@@ -109,7 +110,7 @@ It is good to use cavia with test frameworks like clojure.test, [Midje][midje], 
 ```Clojure
 (ns foo.core-test
   (:require [clojure.test :refer :all]
-            [cavia.core :as cavia :refer [defprofile with-profile]]))
+            [cavia.core :as cavia :refer [defprofile]]))
 
 (defprofile prof
   {:resources [{:id :resource1
@@ -117,15 +118,14 @@ It is good to use cavia with test frameworks like clojure.test, [Midje][midje], 
                 :sha1 "1234567890abcdefghijklmnopqrstuvwxyz1234"}]})
 
 (defn fixture-cavia [f]
-  (with-profile prof
-    (cavia/get!)
-    (f)))
+  (cavia/get! prof)
+  (f))
 
 (use-fixtures :once fixture-cavia)
 
 (deftest your-test
   (testing "tests with the cavia's resource"
-    (is (= (slurp (cavia/resource :resource1)) "resource1's content")))
+    (is (= (slurp (cavia/resource prof :resource1)) "resource1's content")))
 ```
 
 ### with Midje
