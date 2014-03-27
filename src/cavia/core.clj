@@ -10,7 +10,7 @@
 (def skeleton-profile {:download-to ".cavia"})
 
 (defmacro defprofile
-  "Defines a cavia profile. The last defcavia will be used on all cavia functions.
+  "Defines a cavia profile.
   e.g.:
     (defprofile prof
       {:resources [{:id :resource1
