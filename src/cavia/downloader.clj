@@ -30,13 +30,13 @@
     (loop [len (.read is data)
            sum len]
       (when-not (= len -1)
-        (when *verbose*
+        (when (and *verbose* (pos? content-len))
           (print-progress sum content-len))
         (.write os data 0 len)
         (let [len (.read is data)]
           (recur len (+ sum len))))))
   (reset! printed-percentage -1)
-  (when *verbose*
+  (when (and *verbose* (pos? content-len))
     (newline)))
 
 (defn http-download!
@@ -46,7 +46,8 @@
                       (if-let [{:keys [type user password]} auth]
                         {(keyword (str (name type) "-auth")) [user password]}))
         response (client/get url option)
-        content-len (Integer. ^String (get-in response [:headers "content-length"]))
+        content-len (if-let [content-len (get-in response [:headers "content-length"])]
+                      (Integer. ^String content-len) -1)
         is (:body response)]
     (with-open [os (io/output-stream f)]
       (download! is os content-len))))
