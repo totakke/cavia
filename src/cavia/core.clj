@@ -32,6 +32,12 @@
 (def ^:private ^:dynamic *tacit-profile* nil)
 
 (defmacro with-profile
+  "The specified profile will be used in cavia processes when each profile will
+  not be provided.
+  e.g.:
+    (with-profile prof
+      (cavia/clean!)
+      (cavia/get!))"
   [profile & body]
   `(binding [*tacit-profile* ~profile]
      ~@body))
