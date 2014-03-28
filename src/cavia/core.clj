@@ -11,20 +11,22 @@
 
 (defmacro defprofile
   "Defines a cavia profile.
+
   e.g.:
-    (defprofile prof
-      {:resources [{:id :resource1
-                    :url \"http://example.com/resource1\"
-                    :sha1 \"1234567890abcdefghijklmnopqrstuvwxyz1234\"}
-                   {:id :resource2
-                    :url \"http://example.com/resource2\"
-                    :sha1 \"234567890abcdefghijklmnopqrstuvwxyz12345\"
-                    :auth {:type :basic, :user \"user\", :password \"password\"}}
-                   {:id :resource3
-                    :url \"ftp://example.com/resource3\"
-                    :sha1 \"34567890abcdefghijklmnopqrstuvwxyz123456\"
-                    :auth {:user \"user\", :password \"password\"}}]
-      :download-to \".cavia\"})"
+
+      (defprofile prof
+        {:resources [{:id :resource1
+                      :url \"http://example.com/resource1\"
+                      :sha1 \"1234567890abcdefghijklmnopqrstuvwxyz1234\"}
+                     {:id :resource2
+                      :url \"http://example.com/resource2\"
+                      :sha1 \"234567890abcdefghijklmnopqrstuvwxyz12345\"
+                      :auth {:type :basic, :user \"user\", :password \"password\"}}
+                     {:id :resource3
+                      :url \"ftp://example.com/resource3\"
+                      :sha1 \"34567890abcdefghijklmnopqrstuvwxyz123456\"
+                      :auth {:user \"user\", :password \"password\"}}]
+        :download-to \".cavia\"})"
   [name profile]
   `(let [profile# (merge skeleton-profile ~profile)]
      (def ~name (with-meta profile# {:tag ::Profile}))))
@@ -34,10 +36,12 @@
 (defmacro with-profile
   "The specified profile will be used in cavia processes when each profile will
   not be provided.
+
   e.g.:
-    (with-profile prof
-      (cavia/clean!)
-      (cavia/get!))"
+
+      (with-profile prof
+        (cavia/clean!)
+        (cavia/get!))"
   [profile & body]
   `(binding [*tacit-profile* ~profile]
      ~@body))
@@ -53,9 +57,7 @@
   [& args]
   (:tag (meta (first args))))
 
-;;;
-;;; Resource path
-;;;
+;; ## Resource path
 
 (defn- resource*
   [profile id]
@@ -86,9 +88,7 @@
   [id]
   (resource* *tacit-profile* id))
 
-;;;
-;;; Resource info
-;;;
+;; ## Resource info
 
 (defn- resource-info*
   [profile id]
@@ -106,9 +106,7 @@
   [id]
   (resource-info* *tacit-profile* id))
 
-;;;
-;;; Existence
-;;;
+;; ## Existence
 
 (defn- exist?*
   [profile id]
@@ -132,9 +130,7 @@
   [id]
   (exist?* *tacit-profile* id))
 
-;;;
-;;; Validation
-;;;
+;; ## Validation
 
 (defn- print-hash-alert
   ([profile id]
@@ -183,9 +179,7 @@
   [id]
   (valid?* *tacit-profile* id))
 
-;;;
-;;; Verification
-;;;
+;; ## Verification
 
 (defn- verify*
   ([profile]
@@ -210,9 +204,7 @@
   [& args]
   (apply (partial verify* *tacit-profile*) args))
 
-;;;
-;;; Clean
-;;;
+;; ## Clean
 
 (defn- clean!*
   ([profile]
@@ -234,9 +226,7 @@
   [& args]
   (apply (partial clean!* *tacit-profile*) args))
 
-;;;
-;;; Download
-;;;
+;; ## Download
 
 (defn- get-resource
   [profile id]
