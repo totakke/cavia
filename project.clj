@@ -1,9 +1,9 @@
 (defproject cavia "0.1.3-SNAPSHOT"
   :description "A test resource manager for Clojure"
-  :url "https://github.com/totakke/cavia"
+  :url "https://totakke.github.io/cavia/"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.5.1"]
+  :dependencies [[org.clojure/clojure "1.6.0"]
                  [me.raynes/fs "1.4.5"]
                  [pandect "0.3.1"]
                  [clj-http "0.9.1"]
