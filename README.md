@@ -20,7 +20,7 @@ cavia is available as a Maven artifact from [Clojars][clojars].
 To use with Leiningen, add the following dependency.
 
 ```Clojure
-:profiles {:dev {:dependencies [[cavia "0.1.2"]]}}
+:profiles {:dev {:dependencies [[cavia "0.1.3"]]}}
 ```
 
 ## Usage
