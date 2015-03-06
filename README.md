@@ -3,6 +3,7 @@
 **cavia** is a manager library for test resources in a Clojure project.
 
 [![Build Status](https://travis-ci.org/totakke/cavia.svg?branch=master)](https://travis-ci.org/totakke/cavia)
+[![Dependency Status](https://www.versioneye.com/user/projects/54f98ad74f3108b7d2000231/badge.svg?style=flat)](https://www.versioneye.com/user/projects/54f98ad74f3108b7d2000231)
 
 In some cases, tests of a project require large-size files. Codes for parser,
 I/O, etc. should be tested by various kinds of files. But generally, SCM is not
@@ -151,7 +152,7 @@ It is good to use cavia with test frameworks like clojure.test, [Midje][midje], 
 
 ## License
 
-Copyright © 2014 Toshiki TAKEUCHI
+Copyright © 2014-2015 Toshiki Takeuchi
 
 Distributed under the Eclipse Public License version 1.0.
 
