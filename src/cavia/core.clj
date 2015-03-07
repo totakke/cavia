@@ -5,7 +5,8 @@
             [pandect.core :refer [sha1-file]]
             [cavia.common :refer :all]
             [cavia.downloader :as dl]
-            [cavia.util :as util]))
+            [cavia.util :as util])
+  (:import java.io.File))
 
 (def skeleton-profile {:download-to ".cavia"})
 
@@ -66,7 +67,7 @@
                       (filter #(= (:id %) id))
                       (first)
                       (:id))]
-      (fs/absolute-path (str download-to "/" (name id*))))))
+      (.getAbsolutePath ^File (fs/absolute (str download-to "/" (name id*)))))))
 
 (defn- resource-download [profile id]
   (format "%s.download" (resource* profile id)))
