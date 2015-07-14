@@ -16,13 +16,11 @@ and provides convenience functions to access the resources.
 
 ## Installation
 
-cavia is available as a Maven artifact from [Clojars][clojars].
+cavia is available as a Maven artifact from Clojars.
 
 To use with Leiningen, add the following dependency.
 
-```Clojure
-:profiles {:dev {:dependencies [[cavia "0.1.4"]]}}
-```
+[![Clojars Project](http://clojars.org/cavia/latest-version.svg)](http://clojars.org/cavia)
 
 ## Usage
 
@@ -165,7 +163,6 @@ Chrovis is directed by [Xcoo, Inc.][xcoo].
 * Xcoo: http://www.xcoo.jp/
 * Chrovis: https://chrov.is/
 
-[clojars]: https://clojars.org/cavia
 [midje]: https://github.com/marick/Midje
 [xcoo]: http://www.xcoo.jp/
 [chrovis]: https://chrov.is/
