@@ -3,7 +3,7 @@
             [clojure.java.io :as io]
             [clj-http.client :as client]
             [miner.ftp :as ftp]
-            [clojurewerkz.urly.core :as urly]
+            [cemerick.url :as c-url]
             [cavia.common :refer :all])
   (:import [java.io InputStream OutputStream]))
 
@@ -55,13 +55,13 @@
 (defn ftp-download!
   "Downloads from the url via FTP and saves it to local as f."
   [url f & {:keys [auth]}]
-  (let [u (urly/url-like url)
-        host (str (urly/protocol-of u) "://"
-                  (if-let [{:keys [user password]} auth]
-                    (str user ":" password "@" (urly/host-of u))
-                    (urly/authority-of u)))
-        path (urly/path-of u)]
-    (ftp/with-ftp [ftp-client host :file-type :binary]
+  (let [u (c-url/url url)
+        root-url (str (:protocol u) "://"
+                      (if-let [{:keys [user password]} auth]
+                        (str user ":" password "@"))
+                      (:host u))
+        path (:path u)]
+    (ftp/with-ftp [ftp-client root-url :file-type :binary]
       (.setSoTimeout ftp-client 30000)
       (.setDataTimeout ftp-client 30000)
       (let [content-len (.. ftp-client (mlistFile path) getSize)]
