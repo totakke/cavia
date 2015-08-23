@@ -4,40 +4,26 @@
             [clj-http.client :as client]
             [miner.ftp :as ftp]
             [cemerick.url :as c-url]
+            [progrock.core :as pr]
             [cavia.common :refer :all])
   (:import [java.io InputStream OutputStream]))
-
-(def ^:private printed-percentage (atom -1))
-
-(defn- print-progress
-  [now total]
-  (let [percentage (quot (* now 100) total)]
-    (when-not (= percentage @printed-percentage)
-      (print (str "\r"
-                  (string/join
-                   (map-indexed (fn [idx _]
-                                  (if (< idx (quot percentage 2)) \# \space))
-                                (repeat 50 nil)))
-                  "| " percentage "%"))
-      (flush)
-      (reset! printed-percentage percentage))))
 
 (defn- download!
   "Downloads from the InputStream to the OutputStream. To print progress, it
   requires the content length."
   [^InputStream is ^OutputStream os content-len]
-  (let [data (byte-array *download-buffer-size*)]
+  (let [data (byte-array *download-buffer-size*)
+        with-print (and *verbose* (pos? content-len))]
     (loop [len (.read is data)
-           sum len]
-      (when-not (= len -1)
-        (when (and *verbose* (pos? content-len))
-          (print-progress sum content-len))
-        (.write os data 0 len)
-        (let [len (.read is data)]
-          (recur len (+ sum len))))))
-  (reset! printed-percentage -1)
-  (when (and *verbose* (pos? content-len))
-    (newline)))
+           sum len
+           bar (pr/progress-bar 100)]
+      (if (= len -1)
+        (when with-print (pr/print (pr/done bar)))
+        (do
+          (when with-print (pr/print bar))
+          (.write os data 0 len)
+          (let [len (.read is data)]
+            (recur len (+ sum len) (assoc bar :progress (quot (* sum 100) content-len)))))))))
 
 (defn http-download!
   "Downloads from the url via HTTP/HTTPS and saves it to local as f."
