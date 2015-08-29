@@ -1,7 +1,7 @@
 (ns cavia.downloader
   (:require [clojure.string :as string]
             [clojure.java.io :as io]
-            [clj-http.client :as client]
+            [clj-http.lite.client :as client]
             [cemerick.url :as c-url]
             [cavia.common :refer :all])
   (:import [java.io InputStream OutputStream]
