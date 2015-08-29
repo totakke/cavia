@@ -1,11 +1,11 @@
 (ns cavia.core
   (:refer-clojure :exclude [get])
   (:require [clojure.java.io :as io]
+            [cemerick.url :as c-url]
             [me.raynes.fs :as fs]
             [pandect.core :refer [sha1-file]]
             [cavia.common :refer :all]
-            [cavia.downloader :as dl]
-            [cavia.util :as util])
+            [cavia.downloader :as dl])
   (:import java.io.File))
 
 (def skeleton-profile {:download-to ".cavia"})
@@ -237,9 +237,9 @@
         {:keys [url sha1 auth]} (resource-info profile id)]
     (when *verbose*
       (println (format "Retrieving %s from %s" id url)))
-    (condp #(%1 %2) (util/protocol-of url)
-      #{:http :https} (dl/http-download! url dl-f :auth auth)
-      #{:ftp}         (dl/ftp-download! url dl-f :auth auth)
+    (condp #(%1 %2) (:protocol (c-url/url url))
+      #{"http" "https"} (dl/http-download! url dl-f :auth auth)
+      #{"ftp"}          (dl/ftp-download! url dl-f :auth auth)
       (throw (java.net.MalformedURLException. "Unsupported protocol")))
     (fs/rename dl-f uv-f)
     (let [act-sha1 (sha1-file uv-f)]

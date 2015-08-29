@@ -2,10 +2,11 @@
   (:require [clojure.string :as string]
             [clojure.java.io :as io]
             [clj-http.client :as client]
-            [miner.ftp :as ftp]
             [cemerick.url :as c-url]
             [cavia.common :refer :all])
-  (:import [java.io InputStream OutputStream]))
+  (:import [java.io InputStream OutputStream]
+           java.net.URLDecoder
+           [org.apache.commons.net.ftp FTP FTPClient FTPSClient FTPReply]))
 
 (def ^:private printed-percentage (atom -1))
 
@@ -52,27 +53,62 @@
     (with-open [os (io/output-stream f)]
       (download! is os content-len))))
 
+(defn- ftp-client
+  [url]
+  (let [u (c-url/url url)
+        ^FTPClient client (case (:protocol u)
+                            "ftp" (FTPClient.)
+                            "ftps" (FTPSClient.)
+                            (throw (Exception. (str "unexpected protocol "
+                                                    (:protocol u)
+                                                    " in FTP url, need \"ftp\" or \"ftps\""))))]
+    (.connect client (:host u) (if (= -1 (:port u)) 21 (:port u)))
+    (let [reply (.getReplyCode client)]
+      (if (not (FTPReply/isPositiveCompletion reply))
+        (do (.disconnect client)
+            (println "Connection refused")
+            nil)
+        client))))
+
+(defn- url-decode
+  [s]
+  (if s (URLDecoder/decode s "UTF-8") ""))
+
+(defn- complete-pending-command
+  [ftp-client]
+  (.completePendingCommand ftp-client)
+  (let [reply-code (.getReplyCode ftp-client)]
+    (when-not (FTPReply/isPositiveCompletion reply-code)
+      (throw (ex-info "Not a Positive completion of last command"
+                      {:reply-code reply-code
+                       :reply-string (.getReplyString ftp-client)})))))
+
 (defn ftp-download!
   "Downloads from the url via FTP and saves it to local as f."
   [url f & {:keys [auth]}]
-  (let [u (c-url/url url)
-        root-url (str (:protocol u) "://"
-                      (if-let [{:keys [user password]} auth]
-                        (str user ":" password "@"))
-                      (:host u))
-        path (:path u)]
-    (ftp/with-ftp [ftp-client root-url :file-type :binary]
-      (.setSoTimeout ftp-client 30000)
-      (.setDataTimeout ftp-client 30000)
-      (let [content-len (.. ftp-client (mlistFile path) getSize)]
-        (with-open [is ^InputStream (ftp/client-get-stream ftp-client path)
+  (when-let [client* (ftp-client url)]
+    (try
+      (when-let [{:keys [user password]} auth]
+        (.login client* (url-decode user) (url-decode password)))
+      (doto client*
+        (.setFileType FTP/BINARY_FILE_TYPE)
+        (.setControlKeepAliveTimeout 300)
+        (.setControlKeepAliveReplyTimeout 1000)
+        (.setSoTimeout 30000)
+        (.setDataTimeout 30000)
+        (.enterLocalPassiveMode))
+      (let [u (c-url/url url)
+            content-len (.. client* (mlistFile (:path u)) getSize)]
+        (with-open [is ^InputStream (.retrieveFileStream client* (:path u))
                     os (io/output-stream f)]
           (download! is os content-len)))
       (try
-        (ftp/client-complete-pending-command ftp-client)
+        (complete-pending-command client*)
         (catch java.net.SocketTimeoutException e
           ;; NOTE: `client-complete-pending-command` sometimes hangs after
           ;;       downloading a large file. But the file is fine and the
           ;;       downloading process succeded to finish. Therefore here
           ;;       ignores the timeout.
-          nil)))))
+          nil))
+      (finally (when (.isConnected client*)
+                 (.disconnect client*))))))
