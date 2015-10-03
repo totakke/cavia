@@ -39,7 +39,7 @@
     (with-open [os (io/output-stream f)]
       (download! is os content-len))))
 
-(defn- ftp-client
+(defn- ^FTPClient ftp-client
   [url]
   (let [u (c-url/url url)
         ^FTPClient client (case (:protocol u)
@@ -48,7 +48,7 @@
                             (throw (Exception. (str "unexpected protocol "
                                                     (:protocol u)
                                                     " in FTP url, need \"ftp\" or \"ftps\""))))]
-    (.connect client (:host u) (if (= -1 (:port u)) 21 (:port u)))
+    (.connect client ^String (:host u) (int (if (= -1 (:port u)) 21 (:port u))))
     (let [reply (.getReplyCode client)]
       (if (not (FTPReply/isPositiveCompletion reply))
         (do (.disconnect client)
@@ -61,7 +61,7 @@
   (if s (URLDecoder/decode s "UTF-8") ""))
 
 (defn- complete-pending-command
-  [ftp-client]
+  [^FTPClient ftp-client]
   (.completePendingCommand ftp-client)
   (let [reply-code (.getReplyCode ftp-client)]
     (when-not (FTPReply/isPositiveCompletion reply-code)
