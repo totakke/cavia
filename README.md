@@ -1,6 +1,6 @@
 # cavia
 
-**cavia** is a manager library for test resources in a Clojure project.
+**cavia** is a manager library of test resources in a Clojure project.
 
 [![Build Status](https://travis-ci.org/totakke/cavia.svg?branch=master)](https://travis-ci.org/totakke/cavia)
 [![Dependency Status](https://www.versioneye.com/user/projects/54f98ad74f3108b7d2000231/badge.svg?style=flat)](https://www.versioneye.com/user/projects/54f98ad74f3108b7d2000231)
@@ -54,7 +54,7 @@ Each resource map must have `:id :url :sha1` fields. These fields are mandatory.
 `:id` should be specified as keyword or string. It is used for resource access
 and downloading file name.
 `:auth` field is optional. It can be used for password authentication.
-cavia is now supporting HTTP/HTTPS/FTP protocols and Basic/Digest authentications.
+cavia is now supporting HTTP/HTTPS/FTP/FTPS protocols and Basic/Digest authentications.
 
 cavia downloads resources to `:download-to` directory. The default location is
 `./.cavia`. Thus maybe you should add `/.cavia` to your SCM ignore list.
@@ -80,7 +80,7 @@ To call cavia functions without the profile specification, use `with-profile` ma
 ```
 
 `get!` and other functions output progress and logs' print to stdout.
-To call above functions quietly, use `without-print` macro.
+To call the above functions quietly, use `without-print` macro.
 
 ```Clojure
 (without-print
