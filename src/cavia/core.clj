@@ -1,7 +1,6 @@
 (ns cavia.core
   (:refer-clojure :exclude [get])
-  (:require [clojure.java.io :as io]
-            [cemerick.url :as c-url]
+  (:require [cemerick.url :as c-url]
             [me.raynes.fs :as fs]
             [pandect.core :refer [sha1-file]]
             [cavia.common :refer :all]
