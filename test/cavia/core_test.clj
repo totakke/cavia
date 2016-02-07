@@ -6,10 +6,10 @@
 
 (defprofile test-prof
   {:resources [{:id :test-resource
-                :url "http://clojure.org/space/showimage/clojure-icon.gif"
-                :sha1 "f21616d75dc27dd2b89fcdef04177976a5d404c4"}
+                :url "http://clojure.org/images/clojure-logo-120b.png"
+                :sha1 "42b1e4f531273ea38caaa8c0b1f8da554aa0739b"}
                {:id :test-resource2
-                :url "http://clojure.org/space/showimage/clojure-icon.gif"
+                :url "http://clojure.org/images/clojure-logo-120b.png"
                 :sha1 "unverifiedsha1"}]})
 
 ;;;
