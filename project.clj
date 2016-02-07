@@ -8,7 +8,7 @@
                  [pandect "0.5.4"]
                  [clj-http-lite "0.3.0"]
                  [com.cemerick/url "0.1.1"]
-                 [commons-net "3.3"]
+                 [commons-net "3.4"]
                  [progrock "0.1.1"]]
   :profiles {:1.6 {:dependencies [[org.clojure/clojure "1.6.0"]]}}
   :signing {:gpg-key "roimisia@gmail.com"})
