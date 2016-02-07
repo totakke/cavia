@@ -150,7 +150,7 @@ It is good to use cavia with test frameworks like clojure.test, [Midje][midje], 
 
 ## License
 
-Copyright © 2014-2015 Toshiki Takeuchi
+Copyright © 2014-2016 Toshiki Takeuchi
 
 Distributed under the Eclipse Public License version 1.0.
 
@@ -158,7 +158,7 @@ Distributed under the Eclipse Public License version 1.0.
 
 cavia was developed for tests of [Chrovis][chrovis].
 Chrovis is a cloud service of genome analysis and visualization for researchers.
-Chrovis is directed by [Xcoo, Inc.][xcoo].
+Chrovis is directed by [Xcoo, Inc.][xcoo]
 
 * Xcoo: http://www.xcoo.jp/
 * Chrovis: https://chrov.is/
