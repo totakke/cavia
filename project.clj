@@ -8,7 +8,7 @@
                  [pandect "0.5.4"]
                  [clj-http-lite "0.3.0"]
                  [com.cemerick/url "0.1.1"]
-                 [commons-net "3.4"]
+                 [commons-net "3.5"]
                  [progrock "0.1.1"]]
   :profiles {:1.7 {:dependencies [[org.clojure/clojure "1.7.0"]]}
              :1.6 {:dependencies [[org.clojure/clojure "1.6.0"]]}}
