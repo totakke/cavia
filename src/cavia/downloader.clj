@@ -3,7 +3,8 @@
             [clj-http.lite.client :as client]
             [cemerick.url :as c-url]
             [progrock.core :as pr]
-            [cavia.common :refer :all])
+            [cavia.common :refer :all]
+            [cavia.util :refer [str->int]])
   (:import [java.io InputStream OutputStream]
            java.net.URLDecoder
            [org.apache.commons.net.ftp FTP FTPClient FTPSClient FTPReply]))
@@ -33,7 +34,7 @@
                         {(keyword (str (name type) "-auth")) [user password]}))
         response (client/get url option)
         content-len (if-let [content-len (get-in response [:headers "content-length"])]
-                      (Integer. ^String content-len) -1)
+                      (str->int ^String content-len) -1)
         is (:body response)]
     (with-open [os (io/output-stream f)]
       (download! is os content-len))))
