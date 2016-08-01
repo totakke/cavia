@@ -242,7 +242,8 @@
       #{"ftp"}          (dl/ftp-download! url dl-f :auth auth)
       (throw (java.net.MalformedURLException. "Unsupported protocol")))
     (case pack
-      :gzip (dc/decompress-gzip dl-f uv-f)
+      :gzip (do (dc/decompress-gzip dl-f uv-f)
+                (fs/delete dl-f))
       (fs/rename dl-f uv-f))
     (let [act-sha1 (sha1-file uv-f)]
       (if (= act-sha1 sha1)
