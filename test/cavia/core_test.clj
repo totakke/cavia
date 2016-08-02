@@ -14,7 +14,7 @@
                {:id :test-resource-gzip
                 :url "https://www.gnu.org/software/emacs/manual/ps/elisp.ps.gz"
                 :sha1 "15aed8831dd42a196288df838793f30b2587fa61"
-                :pack :gzip}]})
+                :packed :gzip}]})
 
 ;;;
 ;;; Setup and teardown

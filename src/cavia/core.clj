@@ -234,14 +234,14 @@
   (let [f    (resource profile id)
         dl-f (resource-download profile id)
         uv-f (resource-unverified profile id)
-        {:keys [url sha1 auth pack]} (resource-info profile id)]
+        {:keys [url sha1 auth packed]} (resource-info profile id)]
     (when *verbose*
       (println (format "Retrieving %s from %s" id url)))
     (condp #(%1 %2) (:protocol (c-url/url url))
       #{"http" "https"} (dl/http-download! url dl-f :auth auth)
       #{"ftp"}          (dl/ftp-download! url dl-f :auth auth)
       (throw (java.net.MalformedURLException. "Unsupported protocol")))
-    (case pack
+    (case packed
       :gzip (do (dc/decompress-gzip dl-f uv-f)
                 (fs/delete dl-f))
       (fs/rename dl-f uv-f))
