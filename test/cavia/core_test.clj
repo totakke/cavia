@@ -10,7 +10,11 @@
                 :sha1 "42b1e4f531273ea38caaa8c0b1f8da554aa0739b"}
                {:id :test-resource2
                 :url "http://clojure.org/images/clojure-logo-120b.png"
-                :sha1 "unverifiedsha1"}]})
+                :sha1 "unverifiedsha1"}
+               {:id :test-resource-gzip
+                :url "https://www.gnu.org/software/emacs/manual/ps/elisp.ps.gz"
+                :sha1 "15aed8831dd42a196288df838793f30b2587fa61"
+                :packed :gzip}]})
 
 ;;;
 ;;; Setup and teardown
@@ -49,3 +53,9 @@
     (is (cavia/valid? :test-resource)))
   (testing "returns false if the file's hash is invalid"
     (is (not (cavia/valid? :test-resource2)))))
+
+(deftest gzip-test
+  (testing ""
+    (is (cavia/exist? :test-resource-gzip)))
+  (testing ""
+    (is (cavia/valid? :test-resource-gzip))))

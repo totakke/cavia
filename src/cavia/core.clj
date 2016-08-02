@@ -4,7 +4,8 @@
             [me.raynes.fs :as fs]
             [pandect.core :refer [sha1-file]]
             [cavia.common :refer :all]
-            [cavia.downloader :as dl])
+            [cavia [downloader :as dl]
+                   [decompressor :as dc]])
   (:import java.io.File))
 
 (def skeleton-profile {:download-to ".cavia"})
@@ -233,14 +234,17 @@
   (let [f    (resource profile id)
         dl-f (resource-download profile id)
         uv-f (resource-unverified profile id)
-        {:keys [url sha1 auth]} (resource-info profile id)]
+        {:keys [url sha1 auth packed]} (resource-info profile id)]
     (when *verbose*
       (println (format "Retrieving %s from %s" id url)))
     (condp #(%1 %2) (:protocol (c-url/url url))
       #{"http" "https"} (dl/http-download! url dl-f :auth auth)
       #{"ftp"}          (dl/ftp-download! url dl-f :auth auth)
       (throw (java.net.MalformedURLException. "Unsupported protocol")))
-    (fs/rename dl-f uv-f)
+    (case packed
+      :gzip (do (dc/decompress-gzip dl-f uv-f)
+                (fs/delete dl-f))
+      (fs/rename dl-f uv-f))
     (let [act-sha1 (sha1-file uv-f)]
       (if (= act-sha1 sha1)
         (fs/rename uv-f f)
