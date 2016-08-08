@@ -5,13 +5,13 @@
 [![Build Status](https://travis-ci.org/totakke/cavia.svg?branch=master)](https://travis-ci.org/totakke/cavia)
 [![Dependency Status](https://www.versioneye.com/user/projects/54f98ad74f3108b7d2000231/badge.svg?style=flat)](https://www.versioneye.com/user/projects/54f98ad74f3108b7d2000231)
 
-In some cases, tests of a project require large-size files. Codes for parser,
+In some cases, tests of a project require large-size files. Codes for parsing,
 I/O, etc. should be tested by various kinds of files. But generally, SCM is not
-good for controlling such large test files. One of the solutions is using another
+good for controlling such large test files. One of the solutions is using other
 tools like git-annex. Some Clojurians, however, may think that they want to
 solve it in the Clojure ecosystem. cavia is useful for such developers. cavia is
-written by Clojure, so it can be directly used in a project and source codes.
-cavia downloads test resources from remotes and checks their hash before tests,
+written by Clojure so that it can be directly used in a project and source codes.
+cavia downloads test resources from remotes and checks their hash before tests
 and provides convenience functions to access the resources.
 
 ## Installation
@@ -45,7 +45,12 @@ First, load `cavia.core` and prepare resources' information with `defprofile` ma
                {:id :resource3
                 :url "ftp://example.com/resource3"
                 :sha1 "34567890abcdefghijklmnopqrstuvwxyz123456"
-                :auth {:user "user", :password "password"}}]
+                :auth {:user "user", :password "password"}}
+               ;; Compressed source
+               {:id :resource4
+                :url "http://example.com/resource4.gz"
+                :sha1 "4567890abcdefghijklmnopqrstuvwxyz1234567"
+                :packed :gzip}]
    :download-to ".cavia"})
 ```
 
@@ -55,6 +60,8 @@ Each resource map must have `:id :url :sha1` fields. These fields are mandatory.
 and downloading file name.
 `:auth` field is optional. It can be used for password authentication.
 cavia is now supporting HTTP/HTTPS/FTP/FTPS protocols and Basic/Digest authentications.
+A resource that `:packed` specified will be uncompressed after downloading.
+Only gzip (`:gzip`) format is supported.
 
 cavia downloads resources to `:download-to` directory. The default location is
 `./.cavia`. Thus maybe you should add `/.cavia` to your SCM ignore list.
