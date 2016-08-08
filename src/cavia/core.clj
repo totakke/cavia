@@ -1,8 +1,9 @@
 (ns cavia.core
   (:refer-clojure :exclude [get])
-  (:require [cemerick.url :as c-url]
+  (:require [clojure.java.io :as io]
+            [cemerick.url :as c-url]
+            [digest]
             [me.raynes.fs :as fs]
-            [pandect.core :refer [sha1-file]]
             [cavia.common :refer :all]
             [cavia [downloader :as dl]
                    [decompressor :as dc]])
@@ -132,6 +133,10 @@
   (exist?* *tacit-profile* id))
 
 ;; ## Validation
+
+(defn- sha1-file
+  [f]
+  (digest/sha1 (io/file f)))
 
 (defn- print-hash-alert
   ([profile id]

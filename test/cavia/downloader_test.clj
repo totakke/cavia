@@ -1,7 +1,7 @@
 (ns cavia.downloader-test
   (:require [clojure.test :refer :all]
             [clojure.java.io :refer [file]]
-            [pandect.core :refer [sha1-file]]
+            [digest]
             [cavia.test-util :refer :all]
             [cavia.downloader :as dl]))
 
@@ -29,6 +29,10 @@
 (def ftp-test-auth {:user "anonymous"})
 (def ftp-test-hash "784223e89be5c29d7348b3d644c8dffb52f86aa9")
 (def ftp-test-local (str temp-dir "/ftp-test-resource"))
+
+(defn- sha1-file
+  [f]
+  (digest/sha1 (file f)))
 
 ;;;
 ;;; Tests
