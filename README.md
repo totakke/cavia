@@ -2,8 +2,9 @@
 
 **cavia** is a manager library of test resources in a Clojure project.
 
+[![Clojars Project](https://img.shields.io/clojars/v/cavia.svg)](https://clojars.org/cavia)
 [![Build Status](https://travis-ci.org/totakke/cavia.svg?branch=master)](https://travis-ci.org/totakke/cavia)
-[![Dependency Status](https://www.versioneye.com/user/projects/54f98ad74f3108b7d2000231/badge.svg?style=flat)](https://www.versioneye.com/user/projects/54f98ad74f3108b7d2000231)
+[![Dependency Status](https://www.versioneye.com/user/projects/54f98ad74f3108b7d2000231/badge.svg)](https://www.versioneye.com/user/projects/54f98ad74f3108b7d2000231)
 
 In some cases, tests of a project require large-size files. Codes for parsing,
 I/O, etc. should be tested by various kinds of files. But generally, SCM is not
@@ -16,11 +17,13 @@ and provides convenience functions to access the resources.
 
 ## Installation
 
-cavia is available as a Maven artifact from Clojars.
+cavia is available as a Maven artifact from [Clojars](http://clojars.org/cavia).
 
-To use with Leiningen, add the following dependency.
+With Leiningen/Boot:
 
-[![Clojars Project](http://clojars.org/cavia/latest-version.svg)](http://clojars.org/cavia)
+```clojure
+[cavia "0.2.3"]
+```
 
 ## Usage
 
@@ -109,7 +112,7 @@ It returns `nil` when the id is not defined.
 ## Example usage with test frameworks
 
 cavia is a library for management of test resources.
-It is good to use cavia with test frameworks like clojure.test, [Midje][midje], etc.
+It is good to use cavia with test frameworks like clojure.test, [Midje](https://github.com/marick/Midje), etc.
 
 ### with clojure.test
 
@@ -163,13 +166,9 @@ Distributed under the Eclipse Public License version 1.0.
 
 ## Special thanks
 
-cavia was developed for tests of [Chrovis][chrovis].
+cavia was developed for tests of [Chrovis](https://chrov.is/).
 Chrovis is a cloud service of genome analysis and visualization for researchers.
-Chrovis is directed by [Xcoo, Inc.][xcoo]
+Chrovis is directed by [Xcoo, Inc.](https://xcoo.jp/)
 
-* Xcoo: http://www.xcoo.jp/
+* Xcoo: https://xcoo.jp/
 * Chrovis: https://chrov.is/
-
-[midje]: https://github.com/marick/Midje
-[xcoo]: http://www.xcoo.jp/
-[chrovis]: https://chrov.is/
