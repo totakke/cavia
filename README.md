@@ -160,7 +160,7 @@ It is good to use cavia with test frameworks like clojure.test, [Midje](https://
 
 ## License
 
-Copyright © 2014-2016 Toshiki Takeuchi
+Copyright © 2014-2017 Toshiki Takeuchi
 
 Distributed under the Eclipse Public License version 1.0.
 
