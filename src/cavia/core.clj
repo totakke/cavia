@@ -136,7 +136,8 @@
 
 (defn- sha1-file
   [f]
-  (digest/sha1 (io/file f)))
+  (binding [digest/*buffer-size* 8192]
+    (digest/sha1 (io/file f))))
 
 (defn- print-hash-alert
   ([profile id]
