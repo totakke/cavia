@@ -11,6 +11,12 @@
                {:id :test-resource2
                 :url "http://clojure.org/images/clojure-logo-120b.png"
                 :sha1 "unverifiedsha1"}
+               {:id :test-resource3
+                :url "http://clojure.org/images/clojure-logo-120b.png"
+                :md5 "55460a606d685bd7dce30db7a5a89449"}
+               {:id :test-resource4
+                :url "http://clojure.org/images/clojure-logo-120b.png"
+                :sha256 "4fbe07080f09fa408af17de574c9a636638347dabdfe406ec09d7e045c8e8939"}
                {:id :test-resource-gzip
                 :url "https://www.gnu.org/software/emacs/manual/ps/elisp.ps.gz"
                 :sha1 "15aed8831dd42a196288df838793f30b2587fa61"
@@ -50,7 +56,10 @@
 
 (deftest valid?-test
   (testing "returns true if the file's hash is valid"
-    (is (cavia/valid? :test-resource)))
+    (are [k] (cavia/valid? k)
+      :test-resource
+      :test-resource3
+      :test-resource4))
   (testing "returns false if the file's hash is invalid"
     (is (not (cavia/valid? :test-resource2)))))
 

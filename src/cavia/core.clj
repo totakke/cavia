@@ -134,19 +134,37 @@
 
 ;; ## Validation
 
-(defn- sha1-file
-  [f]
+(def ^:private hash-algo-order
+  "Available hash algorithms with priority values. An algorithm with larger
+  priority will be used."
+  {:md5 0
+   :sha1 1
+   :sha256 2})
+
+(defn- enabled-hash
+  [r]
+  (->> (select-keys r [:md5 :sha1 :sha256])
+       (sort-by #((first %) hash-algo-order) >)
+       first))
+
+(defn- hash-file
+  [f algo]
   (binding [digest/*buffer-size* 8192]
-    (digest/sha1 (io/file f))))
+    ((case algo
+       :md5 digest/md5
+       :sha1 digest/sha1
+       :sha256 digest/sha-256
+       (throw (IllegalArgumentException. (str "Invalid hash algorithm: " algo))))
+     (io/file f))))
 
 (defn- print-hash-alert
   ([profile id]
-     (let [sha1 (->> (:resources profile)
-                     (filter #(= (:id %) id))
-                     (first)
-                     (:sha1))
+   (let [[ha hv] (->> (:resources profile)
+                      (filter #(= (:id %) id))
+                      (first)
+                      (enabled-hash))
            f (resource* id)]
-       (print-hash-alert id sha1 (sha1-file f))))
+     (print-hash-alert id hv (hash-file f ha))))
   ([id expect-hash actual-hash]
      (println (str "Invalid hash: " id))
      (println (str "  Expected: " expect-hash))
@@ -158,21 +176,21 @@
 
 (defn- valid?*
   [profile id]
-  (let [sha1 (->> (:resources profile)
-                  (filter #(= (:id %) id))
-                  (first)
-                  (:sha1))
+  (let [[ha hv] (->> (:resources profile)
+                     (filter #(= (:id %) id))
+                     (first)
+                     (enabled-hash))
         f (resource profile id)]
-    (and (exist? profile id) (= (sha1-file f) sha1))))
+    (and (exist? profile id) (= (hash-file f ha) hv))))
 
 (defn- valid-unverified?
   [profile id]
-  (let [sha1 (->> (:resources profile)
-                  (filter #(= (:id %) id))
-                  (first)
-                  (:sha1))
+  (let [[ha hv] (->> (:resources profile)
+                     (filter #(= (:id %) id))
+                     (first)
+                     (enabled-hash))
         f (resource-unverified profile id)]
-    (and (exist-unverified? profile id) (= (sha1-file f) sha1))))
+    (and (exist-unverified? profile id) (= (hash-file f ha) hv))))
 
 (defmulti valid?
   "Returns true if the resource's real hash is same as the defined hash."
@@ -240,7 +258,7 @@
   (let [f    (resource profile id)
         dl-f (resource-download profile id)
         uv-f (resource-unverified profile id)
-        {:keys [url sha1 auth packed]} (resource-info profile id)]
+        {:keys [url auth packed], :as r} (resource-info profile id)]
     (when *verbose*
       (println (format "Retrieving %s from %s" id url)))
     (condp #(%1 %2) (:protocol (c-url/url url))
@@ -251,10 +269,11 @@
       :gzip (do (dc/decompress-gzip dl-f uv-f)
                 (fs/delete dl-f))
       (fs/rename dl-f uv-f))
-    (let [act-sha1 (sha1-file uv-f)]
-      (if (= act-sha1 sha1)
+    (let [[ha hv] (enabled-hash r)
+          act-hash (hash-file uv-f ha)]
+      (if (= act-hash hv)
         (fs/rename uv-f f)
-        (print-hash-alert id sha1 act-sha1)))))
+        (print-hash-alert id hv act-hash)))))
 
 (defn- get!*
   [profile]
