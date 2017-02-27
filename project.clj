@@ -7,7 +7,7 @@
                  [me.raynes/fs "1.4.6"]
                  [clj-http-lite "0.3.0"]
                  [com.cemerick/url "0.1.1"]
-                 [commons-net "3.5"]
+                 [commons-net "3.6"]
                  [digest "1.4.5"]
                  [progrock "0.1.1"]]
   :profiles {:1.9 {:dependencies [[org.clojure/clojure "1.9.0-alpha11"]]}
