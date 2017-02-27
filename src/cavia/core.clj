@@ -19,15 +19,19 @@
       (defprofile prof
         {:resources [{:id :resource1
                       :url \"http://example.com/resource1\"
-                      :sha1 \"1234567890abcdefghijklmnopqrstuvwxyz1234\"}
+                      :sha256 \"0123456789abcdef01234567890abcdef01234567890abcdef01234567890abc\"}
                      {:id :resource2
                       :url \"http://example.com/resource2\"
-                      :sha1 \"234567890abcdefghijklmnopqrstuvwxyz12345\"
+                      :sha1 \"123456789abcdef01234567890abcdef01234567\"
                       :auth {:type :basic, :user \"user\", :password \"password\"}}
                      {:id :resource3
                       :url \"ftp://example.com/resource3\"
-                      :sha1 \"34567890abcdefghijklmnopqrstuvwxyz123456\"
-                      :auth {:user \"user\", :password \"password\"}}]
+                      :sha256 \"23456789abcdef01234567890abcdef01234567890abcdef01234567890abcde\"
+                      :auth {:user \"user\", :password \"password\"}}
+                     {:id :resource4
+                      :url \"http://example.com/resource4.gz\"
+                      :sha1 \"3456789abcdef01234567890abcdef0123456789\"
+                      :packed :gzip}]
         :download-to \".cavia\"})"
   [name profile]
   `(let [profile# (merge skeleton-profile ~profile)]
