@@ -52,7 +52,8 @@
     (let [reply (.getReplyCode client)]
       (if (not (FTPReply/isPositiveCompletion reply))
         (do (.disconnect client)
-            (println "Connection refused")
+            (binding [*out* *err*]
+              (println "Connection refused"))
             nil)
         client))))
 

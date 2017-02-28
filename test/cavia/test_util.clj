@@ -3,7 +3,8 @@
 
 (defmacro with-out-null
   [& body]
-  `(binding [*out* (io/writer "/dev/null")]
+  `(binding [*out* (io/writer "/dev/null")
+             *err* (io/writer "/dev/null")]
      ~@body))
 
 (def temp-dir (.getPath (io/file (System/getProperty "java.io.tmpdir") "cavia-test")))

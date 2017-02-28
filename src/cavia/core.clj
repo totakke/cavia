@@ -166,13 +166,15 @@
            f (resource* id)]
      (print-hash-alert id hv (hash-file f ha))))
   ([id expect-hash actual-hash]
+   (binding [*out* *err*]
      (println (str "Invalid hash: " id))
      (println (str "  Expected: " expect-hash))
-     (println (str "  Actual: " actual-hash))))
+     (println (str "  Actual: " actual-hash)))))
 
 (defn- print-missing-alert
   [id]
-  (println (str "Missing: " id)))
+  (binding [*out* *err*]
+    (println (str "Missing: " id))))
 
 (defn- valid?*
   [profile id]
