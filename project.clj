@@ -1,6 +1,6 @@
-(defproject cavia "0.3.2-SNAPSHOT"
-  :description "A test resource manager for Clojure"
-  :url "https://totakke.github.io/cavia/"
+(defproject cavia "0.4.0"
+  :description "Test resource manager for Clojure project"
+  :url "https://github.com/totakke/cavia"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
