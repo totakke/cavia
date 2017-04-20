@@ -6,20 +6,20 @@
 
 (defprofile test-prof
   {:resources [{:id :test-resource
-                :url "http://clojure.org/images/clojure-logo-120b.png"
-                :sha1 "42b1e4f531273ea38caaa8c0b1f8da554aa0739b"}
+                :url "https://s3.amazonaws.com/cavia/test.png"
+                :sha1 "07dba3bd9f227f58134d339b1609e0a913abe0de"}
                {:id :test-resource2
-                :url "http://clojure.org/images/clojure-logo-120b.png"
+                :url "https://s3.amazonaws.com/cavia/test.png"
                 :sha1 "unverifiedsha1"}
                {:id :test-resource3
-                :url "http://clojure.org/images/clojure-logo-120b.png"
-                :md5 "55460a606d685bd7dce30db7a5a89449"}
+                :url "https://s3.amazonaws.com/cavia/test.png"
+                :md5 "0656b409231ee9bd8c5c9272647c69a1"}
                {:id :test-resource4
-                :url "http://clojure.org/images/clojure-logo-120b.png"
-                :sha256 "4fbe07080f09fa408af17de574c9a636638347dabdfe406ec09d7e045c8e8939"}
+                :url "https://s3.amazonaws.com/cavia/test.png"
+                :sha256 "55902cd4056e2bd57ced9296c826e4df42f07457c96ce72afe8652d0d6dd89b3"}
                {:id :test-resource-gzip
-                :url "https://www.gnu.org/software/emacs/manual/ps/elisp.ps.gz"
-                :sha1 "15aed8831dd42a196288df838793f30b2587fa61"
+                :url "https://s3.amazonaws.com/cavia/test.png.gz"
+                :sha1 "07dba3bd9f227f58134d339b1609e0a913abe0de"
                 :packed :gzip}]})
 
 ;;;

@@ -21,8 +21,8 @@
 ;;; defs
 ;;;
 
-(def http-test-url "http://clojure.org/images/clojure-logo-120b.png")
-(def http-test-hash "42b1e4f531273ea38caaa8c0b1f8da554aa0739b")
+(def http-test-url "https://s3.amazonaws.com/cavia/test.png")
+(def http-test-hash "07dba3bd9f227f58134d339b1609e0a913abe0de")
 (def http-test-local (str temp-dir "/http-test-resource"))
 
 (def ftp-test-url "ftp://ftp.funet.fi/pub/misc/ChangeLog")
