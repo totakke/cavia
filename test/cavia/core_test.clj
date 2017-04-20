@@ -1,6 +1,6 @@
 (ns cavia.core-test
   (:require [clojure.test :refer :all]
-            [me.raynes.fs :as fs]
+            [clojure.java.io :as io]
             [cavia.test-util :refer :all]
             [cavia.core :as cavia :refer [defprofile with-profile without-print]]))
 
@@ -44,7 +44,7 @@
   (testing "returns the resource's path"
     (is (not (nil? (re-find #".*\.cavia/test-resource$" (cavia/resource :test-resource))))))
   (testing "return path is absolute"
-    (is (fs/absolute? (cavia/resource :test-resource))))
+    (is (.isAbsolute (io/file (cavia/resource :test-resource)))))
   (testing "returns nil when the id does not exist"
     (is (nil? (cavia/resource :notexist)))))
 

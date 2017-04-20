@@ -3,10 +3,10 @@
   (:require [clojure.java.io :as io]
             [cemerick.url :as c-url]
             [digest]
-            [me.raynes.fs :as fs]
             [cavia.common :refer :all]
             [cavia [downloader :as dl]
-                   [decompressor :as dc]])
+                   [decompressor :as dc]
+                   [util :refer [delete-dir]]])
   (:import java.io.File))
 
 (def skeleton-profile {:download-to ".cavia"})
@@ -72,7 +72,7 @@
                       (filter #(= (:id %) id))
                       (first)
                       (:id))]
-      (.getAbsolutePath ^File (fs/absolute (str download-to "/" (name id*)))))))
+      (.getAbsolutePath (io/file (str download-to "/" (name id*)))))))
 
 (defn- resource-download [profile id]
   (format "%s.download" (resource* profile id)))
@@ -117,12 +117,12 @@
 (defn- exist?*
   [profile id]
   (let [f (resource profile id)]
-    (and (not (nil? f)) (fs/file? f))))
+    (and (not (nil? f)) (.isFile (io/file f)))))
 
 (defn- exist-unverified?
   [profile id]
   (let [f (resource-unverified profile id)]
-    (and (not (nil? f)) (fs/file? f))))
+    (and (not (nil? f)) (.isFile (io/file f)))))
 
 (defmulti exist?
   "Returns true if the specified resource exists on local."
@@ -239,10 +239,10 @@
 
 (defn- clean!*
   ([profile]
-     (fs/delete-dir (:download-to profile))
+     (delete-dir (:download-to profile))
      nil)
   ([profile id]
-     (fs/delete (resource id))
+     (io/delete-file (resource id))
      nil))
 
 (defmulti clean!
@@ -273,27 +273,27 @@
       (throw (java.net.MalformedURLException. "Unsupported protocol")))
     (case packed
       :gzip (do (dc/decompress-gzip dl-f uv-f)
-                (fs/delete dl-f))
-      (fs/rename dl-f uv-f))
+                (io/delete-file dl-f))
+      (.renameTo (io/file dl-f) (io/file uv-f)))
     (let [[ha hv] (enabled-hash r)
           act-hash (hash-file uv-f ha)]
       (if (= act-hash hv)
-        (fs/rename uv-f f)
+        (.renameTo (io/file uv-f) (io/file f))
         (print-hash-alert id hv act-hash)))))
 
 (defn- get!*
   [profile]
   (let [{:keys [resources download-to]} profile]
-    (when-not (fs/directory? download-to)
-      (fs/mkdir download-to))
+    (when-not (.isDirectory (io/file download-to))
+      (.mkdir (io/file download-to)))
     (doseq [r resources]
       (let [id (:id r)]
        (cond
         (valid? profile id) (when *verbose*
                               (println (str "Already downloaded: " id)))
         (valid-unverified? profile id) (do
-                                         (fs/rename (resource-unverified profile id)
-                                                    (resource profile id))
+                                         (.renameTo (io/file (resource-unverified profile id))
+                                                    (io/file (resource profile id)))
                                          (when *verbose*
                                            (println (str "Verified " id))))
         :else (get-resource profile id))))))
