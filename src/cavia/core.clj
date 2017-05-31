@@ -167,7 +167,7 @@
                       (filter #(= (:id %) id))
                       (first)
                       (enabled-hash))
-           f (resource* id)]
+           f (resource* profile id)]
      (print-hash-alert id hv (hash-file f ha))))
   ([id expect-hash actual-hash]
    (binding [*out* *err*]
