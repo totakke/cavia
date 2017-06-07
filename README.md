@@ -6,6 +6,8 @@
 
 Test resource manager for Clojure project.
 
+## Rationale
+
 In some cases, tests of a project require large-size files. Codes for parsing,
 I/O, etc. should be tested by various kinds of files. But generally, SCM is not
 good for controlling such large test files. One of the solutions is using other
@@ -22,7 +24,7 @@ cavia is available as a Maven artifact from [Clojars](http://clojars.org/cavia).
 With Leiningen/Boot:
 
 ```clojure
-[cavia "0.4.0"]
+[cavia "0.4.1"]
 ```
 
 ## Usage
