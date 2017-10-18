@@ -1,6 +1,6 @@
 (ns cavia.downloader
   (:require [clojure.java.io :as io]
-            [clj-http.lite.client :as client]
+            [clj-http.client :as client]
             [cemerick.url :as c-url]
             [progrock.core :as pr]
             [cavia.common :refer :all]
