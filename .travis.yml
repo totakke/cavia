@@ -1,8 +1,8 @@
 language: clojure
 lein: 2.8.0
 jdk:
-  - oraclejdk7
   - oraclejdk8
   - oraclejdk9
   - openjdk7
+  - openjdk8
 script: lein with-profile dev:1.6:1.8:1.9 test
