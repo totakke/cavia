@@ -50,7 +50,7 @@
                                                     " in FTP url, need \"ftp\" or \"ftps\""))))]
     (.connect client ^String (:host u) (int (if (= -1 (:port u)) 21 (:port u))))
     (let [reply (.getReplyCode client)]
-      (if (not (FTPReply/isPositiveCompletion reply))
+      (if-not (FTPReply/isPositiveCompletion reply)
         (do (.disconnect client)
             (binding [*out* *err*]
               (println "Connection refused"))

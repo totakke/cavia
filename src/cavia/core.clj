@@ -82,8 +82,8 @@
 
 (defmulti resource
   "Returns the local path of the specified resource. Returns nil if the resource
-  is not defined in your defcavia. Take care that this function will return the
-  path even if the defiend resource is not downloaded."
+  is not defined in your profile. Note that this function will return the path
+  even if the resource has not been downloaded yet."
   meta-tag)
 
 (defmethod resource ::Profile
