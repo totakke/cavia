@@ -242,7 +242,7 @@
      (delete-dir (:download-to profile))
      nil)
   ([profile id]
-     (io/delete-file (resource id))
+     (io/delete-file (resource profile id))
      nil))
 
 (defmulti clean!
