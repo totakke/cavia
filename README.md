@@ -24,7 +24,7 @@ cavia is available as a Maven artifact from [Clojars](http://clojars.org/cavia).
 With Leiningen/Boot:
 
 ```clojure
-[cavia "0.4.1"]
+[cavia "0.4.2"]
 ```
 
 ## Usage
