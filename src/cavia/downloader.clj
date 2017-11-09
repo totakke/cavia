@@ -5,7 +5,7 @@
             [progrock.core :as pr]
             [cavia.common :refer :all]
             [cavia.util :refer [str->int]])
-  (:import [java.io InputStream OutputStream]
+  (:import [java.io InputStream OutputStream IOException]
            java.net.URLDecoder
            [org.apache.commons.net.ftp FTP FTPClient FTPSClient FTPReply]))
 
@@ -85,7 +85,7 @@
         (.setDataTimeout 30000)
         (.enterLocalPassiveMode))
       (let [u (c-url/url url)
-            content-len (.. client* (mlistFile (:path u)) getSize)]
+            content-len (try (.. client* (mlistFile (:path u)) getSize) (catch IOException _ -1))]
         (with-open [is ^InputStream (.retrieveFileStream client* (:path u))
                     os (io/output-stream f)]
           (download! is os content-len)))
