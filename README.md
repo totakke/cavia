@@ -1,4 +1,4 @@
-# cavia
+# Cavia
 
 [![Clojars Project](https://img.shields.io/clojars/v/cavia.svg)](https://clojars.org/cavia)
 [![Build Status](https://travis-ci.org/totakke/cavia.svg?branch=master)](https://travis-ci.org/totakke/cavia)
@@ -8,18 +8,20 @@ Test resource manager for Clojure project.
 
 ## Rationale
 
-In some cases, tests of a project require large-size files. Codes for parsing,
-I/O, etc. should be tested by various kinds of files. But generally, SCM is not
-good for controlling such large test files. One of the solutions is using other
-tools like git-annex or Git LFS. Some Clojurians, however, may think that they
-want to solve it in the Clojure ecosystem. cavia is useful for such developers.
-cavia is written by Clojure so that it can be directly used in a project and
-source codes. cavia downloads test resources from remotes and checks their hash
-before tests and provides convenience functions to access the resources.
+In some cases, tests of a project require large-size files. Among other things,
+codes for parsing and I/O should be tested by various kinds of files. But
+generally, SCM is not good for controlling such large test files. One of the
+solutions is using other tools like git-annex or Git LFS. Some Clojurians,
+however, may think that they want to solve it in the Clojure ecosystem.
+
+Cavia is useful for such developers. Cavia is written in Clojure so that it can
+be directly used in a project and source codes. Cavia downloads test resources
+from remotes, checks their hash before tests, and provides convenience
+functions to access the resources.
 
 ## Installation
 
-cavia is available as a Maven artifact from [Clojars](http://clojars.org/cavia).
+Cavia is available as a Maven artifact from [Clojars](http://clojars.org/cavia).
 
 With Leiningen/Boot:
 
@@ -31,9 +33,10 @@ With Leiningen/Boot:
 
 ### Define resources profile
 
-First, load `cavia.core` and prepare resources' information with `defprofile` macro.
+First, load `cavia.core` and prepare resources' information with `defprofile`
+macro.
 
-```Clojure
+```clojure
 (require '[cavia.core :as cavia :refer [defprofile]])
 
 (defprofile prof
@@ -60,27 +63,27 @@ First, load `cavia.core` and prepare resources' information with `defprofile` ma
 ```
 
 Resources are defined in `:resources` as a vector including some maps. Each
-resource map must have `:id :url :md5/:sha1/:sha256` fields. These fields are
-mandatory. `:id` should be specified as keyword or string. It is used for
+resource map must have `:id :url :md5/:sha1/:sha256` fields, which are
+mandatory. `:id` should be specified as keyword or string, which is used for
 resource access and downloading file name.
 
 MD5, SHA1, and SHA256 are supported as hash algorithms for verifying files. One
-algorithm must be specified at least. If more than one algorighm are specified,
+algorithm must be specified at least. If more than one algorithm are specified,
 a stronger algorithm will be used: MD5 < SHA1 < SHA256.
 
 `:auth` field is optional. It can be used for password authentication.
-cavia is now supporting HTTP/HTTPS/FTP/FTPS protocols and Basic/Digest
+Cavia is now supporting HTTP/HTTPS/FTP/FTPS protocols and Basic/Digest
 authentications. A resource that `:packed` specified will be uncompressed after
 downloading. Only gzip (`:gzip`) format is supported.
 
-cavia downloads resources to `:download-to` directory. The default location is
+Cavia downloads resources to `:download-to` directory. The default location is
 `./.cavia`. Thus maybe you should add `/.cavia` to your SCM ignore list.
 
 ### Resource management
 
-cavia provides some functions for managing resources.
+Cavia provides some functions for managing resources.
 
-```Clojure
+```clojure
 (cavia/get! prof)   ; downloads missing resources
 
 (cavia/verify prof) ; checks the downloaded resources' hash
@@ -88,10 +91,10 @@ cavia provides some functions for managing resources.
 (cavia/clean! prof) ; removes the download directory
 ```
 
-To call cavia functions without the profile specification, use `with-profile`
+To call Cavia functions without the profile specification, use `with-profile`
 macro.
 
-```Clojure
+```clojure
 (with-profile prof
   (cavia/clean!)
   (cavia/get!))
@@ -100,7 +103,7 @@ macro.
 `get!` and other functions output progress and logs' print to stdout. To call
 the above functions quietly, use `without-print` macro.
 
-```Clojure
+```clojure
 (without-print
   (cavia/get! prof))
 ```
@@ -111,21 +114,23 @@ You do not need to remember the downloaded resources' paths any more. `resource`
 returns the absolute path to the resource from the specified resource id. It
 returns `nil` when the id is not defined.
 
-```Clojure
-(cavia/resource prof :resource1) ; returns "/home/totakke/cavia-example/.cavia/resource1"
+```clojure
+(cavia/resource prof :resource1)
+;;=> "/home/totakke/cavia-example/.cavia/resource1"
 
-(cavia/resource prof :undefined) ; returns nil
+(cavia/resource prof :undefined)
+;;=> nil
 ```
 
 ## Example usage with test frameworks
 
-cavia is a library for management of test resources. It is good to use cavia
+Cavia is a library for management of test resources. It is good to use Cavia
 with test frameworks like clojure.test,
 [Midje](https://github.com/marick/Midje), etc.
 
 ### with clojure.test
 
-```Clojure
+```clojure
 (ns foo.core-test
   (:require [clojure.test :refer :all]
             [cavia.core :as cavia :refer [defprofile]]))
@@ -148,7 +153,7 @@ with test frameworks like clojure.test,
 
 ### with Midje
 
-```Clojure
+```clojure
 (ns foo.t-core
   (:require [midje.sweet :refer :all]
             [cavia.core :as cavia :refer [defprofile with-profile]]))
