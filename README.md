@@ -2,7 +2,6 @@
 
 [![Clojars Project](https://img.shields.io/clojars/v/cavia.svg)](https://clojars.org/cavia)
 [![Build Status](https://travis-ci.org/totakke/cavia.svg?branch=master)](https://travis-ci.org/totakke/cavia)
-[![Dependency Status](https://www.versioneye.com/user/projects/54f98ad74f3108b7d2000231/badge.svg)](https://www.versioneye.com/user/projects/54f98ad74f3108b7d2000231)
 
 Test resource manager for Clojure project.
 
