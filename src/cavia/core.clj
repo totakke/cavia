@@ -1,8 +1,8 @@
 (ns cavia.core
   (:refer-clojure :exclude [get])
   (:require [clojure.java.io :as io]
-            [cemerick.url :as c-url]
             [digest]
+            [lambdaisland.uri :as uri]
             [cavia.common :refer :all]
             [cavia [downloader :as dl]
                    [decompressor :as dc]
@@ -266,7 +266,7 @@
         {:keys [url auth packed], :as r} (resource-info profile id)]
     (when *verbose*
       (println (format "Retrieving %s from %s" id url)))
-    (condp #(%1 %2) (:protocol (c-url/url url))
+    (condp #(%1 %2) (:scheme (uri/uri url))
       #{"http" "https"} (dl/http-download! url dl-f :auth auth)
       #{"ftp"}          (dl/ftp-download! url dl-f :auth auth)
       (throw (java.net.MalformedURLException. "Unsupported protocol")))

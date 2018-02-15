@@ -1,7 +1,7 @@
 (ns cavia.downloader
   (:require [clojure.java.io :as io]
             [clj-http.client :as client]
-            [cemerick.url :as c-url]
+            [lambdaisland.uri :as uri]
             [progrock.core :as pr]
             [cavia.common :refer :all]
             [cavia.util :refer [str->int]])
@@ -41,14 +41,14 @@
 
 (defn- ^FTPClient ftp-client
   [url]
-  (let [u (c-url/url url)
-        ^FTPClient client (case (:protocol u)
+  (let [u (uri/uri url)
+        ^FTPClient client (case (:scheme u)
                             "ftp" (FTPClient.)
                             "ftps" (FTPSClient.)
                             (throw (Exception. (str "unexpected protocol "
-                                                    (:protocol u)
+                                                    (:scheme u)
                                                     " in FTP url, need \"ftp\" or \"ftps\""))))]
-    (.connect client ^String (:host u) (int (if (= -1 (:port u)) 21 (:port u))))
+    (.connect client ^String (:host u) (int (or (:port u) 21)))
     (let [reply (.getReplyCode client)]
       (if-not (FTPReply/isPositiveCompletion reply)
         (do (.disconnect client)
@@ -84,7 +84,7 @@
         (.setSoTimeout 30000)
         (.setDataTimeout 30000)
         (.enterLocalPassiveMode))
-      (let [u (c-url/url url)
+      (let [u (uri/uri url)
             content-len (try (.. client* (mlistFile (:path u)) getSize) (catch IOException _ -1))]
         (with-open [is ^InputStream (.retrieveFileStream client* (:path u))
                     os (io/output-stream f)]
