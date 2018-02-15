@@ -10,6 +10,5 @@
                  [lambdaisland/uri "1.1.0"]
                  [progrock "0.1.2"]]
   :profiles {:1.9 {:dependencies [[org.clojure/clojure "1.9.0"]]}
-             :1.8 {:dependencies [[org.clojure/clojure "1.8.0"]]}
-             :1.6 {:dependencies [[org.clojure/clojure "1.6.0"]]}}
+             :1.8 {:dependencies [[org.clojure/clojure "1.8.0"]]}}
   :signing {:gpg-key "roimisia@gmail.com"})
