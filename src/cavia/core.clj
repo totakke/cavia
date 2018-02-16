@@ -268,7 +268,7 @@
       (println (format "Retrieving %s from %s" id url)))
     (condp #(%1 %2) (:scheme (uri/uri url))
       #{"http" "https"} (dl/http-download! url dl-f :auth auth)
-      #{"ftp"}          (dl/ftp-download! url dl-f :auth auth)
+      #{"ftp" "ftps"}   (dl/ftp-download! url dl-f :auth auth)
       (throw (java.net.MalformedURLException. "Unsupported protocol")))
     (case packed
       :gzip (do (dc/decompress-gzip dl-f uv-f)
