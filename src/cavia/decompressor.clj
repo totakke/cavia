@@ -1,15 +1,19 @@
 (ns cavia.decompressor
+  (:require [clojure.java.io :as io]
+            [cavia.common :refer :all])
   (:import [java.io FileInputStream FileOutputStream]
-           [java.util.zip GZIPInputStream]))
+           org.apache.commons.compress.compressors.CompressorStreamFactory))
 
-(def ^:const buf-size 4096)
+(def compressor-map
+  {:gzip  CompressorStreamFactory/GZIP
+   :bzip2 CompressorStreamFactory/BZIP2})
 
-(defn decompress-gzip
-  [in-f out-f]
-  (let [buffer (byte-array buf-size)]
-    (with-open [in (GZIPInputStream. (FileInputStream. ^String in-f))
-                out (FileOutputStream. ^String out-f)]
-      (loop [len (.read in buffer)]
-        (when (pos? len)
-          (.write out buffer 0 len)
-          (recur (.read in buffer)))))))
+(defn decompress
+  [^String in-f ^String out-f type]
+  (if-let [compressor (get compressor-map type)]
+    (with-open [in (.createCompressorInputStream (CompressorStreamFactory.)
+                                                 compressor
+                                                 (FileInputStream. in-f))
+                out (FileOutputStream. out-f)]
+      (io/copy in out :buffer-size *decompress-buffer-size*))
+    (throw (IllegalArgumentException. (str "Unsupported compressor type: " type)))))

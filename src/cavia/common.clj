@@ -5,5 +5,9 @@
   true)
 
 (def ^:dynamic *download-buffer-size*
-  "A buffer size using in a downloading process. Its unit is byte."
+  "A buffer size used in a downloading process. Its unit is byte."
   1024)
+
+(def ^:dynamic *decompress-buffer-size*
+  "A buffer size used in a decompression process. Its unit is byte."
+  8192)

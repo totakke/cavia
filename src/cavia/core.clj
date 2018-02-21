@@ -270,9 +270,9 @@
       #{"http" "https"} (dl/http-download! url dl-f :auth auth)
       #{"ftp" "ftps"}   (dl/ftp-download! url dl-f :auth auth)
       (throw (java.net.MalformedURLException. "Unsupported protocol")))
-    (case packed
-      :gzip (do (dc/decompress-gzip dl-f uv-f)
-                (io/delete-file dl-f))
+    (if packed
+      (do (dc/decompress dl-f uv-f packed)
+          (io/delete-file dl-f))
       (.renameTo (io/file dl-f) (io/file uv-f)))
     (let [[ha hv] (enabled-hash r)
           act-hash (hash-file uv-f ha)]

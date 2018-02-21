@@ -20,7 +20,11 @@
                {:id :test-resource-gzip
                 :url "https://s3.amazonaws.com/cavia/test.png.gz"
                 :sha1 "07dba3bd9f227f58134d339b1609e0a913abe0de"
-                :packed :gzip}]})
+                :packed :gzip}
+               {:id :test-resource-bzip2
+                :url "https://s3.amazonaws.com/cavia/test.png.bz2"
+                :sha1 "07dba3bd9f227f58134d339b1609e0a913abe0de"
+                :packed :bzip2}]})
 
 ;;;
 ;;; Setup and teardown
@@ -63,8 +67,10 @@
   (testing "returns false if the file's hash is invalid"
     (is (not (cavia/valid? :test-resource2)))))
 
-(deftest gzip-test
-  (testing ""
-    (is (cavia/exist? :test-resource-gzip)))
-  (testing ""
-    (is (cavia/valid? :test-resource-gzip))))
+(deftest packed-test
+  (testing "gzip"
+    (is (cavia/exist? :test-resource-gzip))
+    (is (cavia/valid? :test-resource-gzip)))
+  (testing "bzip2"
+    (is (cavia/exist? :test-resource-bzip2))
+    (is (cavia/valid? :test-resource-bzip2))))
