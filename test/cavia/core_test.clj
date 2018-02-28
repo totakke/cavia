@@ -32,11 +32,11 @@
 
 (defn fixture-cavia [f]
   (with-out-null
-   (with-profile test-prof
-     (cavia/clean!)
-     (cavia/get!)
-     (f)
-     (cavia/clean!))))
+    (with-profile test-prof
+      (cavia/clean!)
+      (cavia/get!)
+      (f)
+      (cavia/clean!))))
 
 (use-fixtures :once fixture-cavia)
 

@@ -4,9 +4,9 @@
             [digest]
             [lambdaisland.uri :as uri]
             [cavia.common :refer :all]
-            [cavia [downloader :as dl]
-                   [decompressor :as dc]
-                   [util :refer [delete-dir]]]))
+            [cavia.downloader :as dl]
+            [cavia.decompressor :as dc]
+            [cavia.util :refer [delete-dir]]))
 
 (def skeleton-profile {:download-to ".cavia"})
 
@@ -166,7 +166,7 @@
                       (filter #(= (:id %) id))
                       (first)
                       (enabled-hash))
-           f (resource* profile id)]
+         f (resource* profile id)]
      (print-hash-alert id hv (hash-file f ha))))
   ([id expect-hash actual-hash]
    (binding [*out* *err*]
@@ -213,13 +213,13 @@
 
 (defn- verify*
   ([profile]
-     (doseq [{:keys [id]} (:resources profile)]
-       (verify* profile id)))
+   (doseq [{:keys [id]} (:resources profile)]
+     (verify* profile id)))
   ([profile id]
-     (if (exist? profile id)
-       (when-not (valid? profile id)
-         (print-hash-alert profile id))
-       (print-missing-alert id))))
+   (if (exist? profile id)
+     (when-not (valid? profile id)
+       (print-hash-alert profile id))
+     (print-missing-alert id))))
 
 (defmulti verify
   "Checks existence and hash of the downloaded resource, printing alert message
@@ -238,11 +238,11 @@
 
 (defn- clean!*
   ([profile]
-     (delete-dir (:download-to profile))
-     nil)
+   (delete-dir (:download-to profile))
+   nil)
   ([profile id]
-     (io/delete-file (resource profile id))
-     nil))
+   (io/delete-file (resource profile id))
+   nil))
 
 (defmulti clean!
   "Removes the specified resource or the download directory."
@@ -287,15 +287,15 @@
       (.mkdir (io/file download-to)))
     (doseq [r resources]
       (let [id (:id r)]
-       (cond
-        (valid? profile id) (when *verbose*
-                              (println (str "Already downloaded: " id)))
-        (valid-unverified? profile id) (do
-                                         (.renameTo (io/file (resource-unverified profile id))
-                                                    (io/file (resource profile id)))
-                                         (when *verbose*
-                                           (println (str "Verified " id))))
-        :else (get-resource profile id))))))
+        (cond
+          (valid? profile id) (when *verbose*
+                                (println (str "Already downloaded: " id)))
+          (valid-unverified? profile id) (do
+                                           (.renameTo (io/file (resource-unverified profile id))
+                                                      (io/file (resource profile id)))
+                                           (when *verbose*
+                                             (println (str "Verified " id))))
+          :else (get-resource profile id))))))
 
 (defmulti get!
   "Downloads missing resources to the local directory."
