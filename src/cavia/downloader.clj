@@ -61,6 +61,15 @@
   [s]
   (if s (URLDecoder/decode s "UTF-8") ""))
 
+(defn- ftp-content-len
+  [^FTPClient ftp-client path]
+  (try
+    (if-let [file (.mlistFile ftp-client path)]
+      (.getSize file)
+      -1)
+    (catch IOException _
+      -1)))
+
 (defn- complete-pending-command
   [^FTPClient ftp-client]
   (.completePendingCommand ftp-client)
@@ -85,7 +94,7 @@
         (.setDataTimeout 30000)
         (.enterLocalPassiveMode))
       (let [u (uri/uri url)
-            content-len (try (.. client* (mlistFile (:path u)) getSize) (catch IOException _ -1))]
+            content-len (ftp-content-len client* (:path u))]
         (with-open [is ^InputStream (.retrieveFileStream client* (:path u))
                     os (io/output-stream f)]
           (download! is os content-len)))
