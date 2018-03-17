@@ -15,7 +15,7 @@
     (f)
     (clean-cache!)))
 
-(use-fixtures :once fixture)
+(use-fixtures :once fixture ftp-server-fixture)
 
 ;;;
 ;;; defs
@@ -25,9 +25,9 @@
 (def http-test-hash "07dba3bd9f227f58134d339b1609e0a913abe0de")
 (def http-test-local (str temp-dir "/http-test-resource"))
 
-(def ftp-test-url "ftp://ftp.funet.fi/pub/misc/ChangeLog")
-(def ftp-test-auth {:user "anonymous"})
-(def ftp-test-hash "784223e89be5c29d7348b3d644c8dffb52f86aa9")
+(def ftp-test-url "ftp://localhost:2221/test.txt")
+(def ftp-test-auth {:user "user" :password "password"})
+(def ftp-test-hash "6fa556105227e58c750010e9627a89e172966f82")
 (def ftp-test-local (str temp-dir "/ftp-test-resource"))
 
 (defn- sha1-file
