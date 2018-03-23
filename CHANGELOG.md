@@ -10,6 +10,8 @@
 
 - Change URL library: cemerick/url to lambdaisland/uri.
 - Use commons-compress for decompression.
+- Update clj-http to 3.8.0.
+- Use mock FTP server for test.
 
 ### Removed
 
@@ -17,7 +19,9 @@
 
 ### Fixed
 
-- Fix FTP download.
+- Fix FTPS download.
+- Fix FTP port parsing.
+- Fix for FTP server not supporting MLST.
 
 ## [0.4.3] - 2017-11-15
 
