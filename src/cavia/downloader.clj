@@ -84,8 +84,9 @@
   [url f & {:keys [auth]}]
   (when-let [client* (ftp-client url)]
     (try
-      (when-let [{:keys [user password]} auth]
-        (.login client* (url-decode user) (url-decode password)))
+      (if-let [{:keys [user password]} auth]
+        (.login client* (url-decode user) (url-decode password))
+        (.login client* "anonymous" nil))
       (doto client*
         (.setFileType FTP/BINARY_FILE_TYPE)
         (.setControlKeepAliveTimeout 300)
