@@ -269,6 +269,7 @@
     (condp #(%1 %2) (:scheme (uri/uri url))
       #{"http" "https"} (dl/http-download! url dl-f :auth auth)
       #{"ftp" "ftps"}   (dl/ftp-download! url dl-f :auth auth)
+      #{"sftp"}         (dl/sftp-download! url dl-f auth)
       (throw (java.net.MalformedURLException. "Unsupported protocol")))
     (if packed
       (do (dc/decompress dl-f uv-f packed)

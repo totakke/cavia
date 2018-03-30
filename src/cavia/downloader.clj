@@ -7,6 +7,7 @@
             [cavia.util :refer [str->int]])
   (:import [java.io InputStream OutputStream IOException]
            java.net.URLDecoder
+           [com.jcraft.jsch ChannelSftp ChannelSftp$LsEntry JSch Session]
            [org.apache.commons.net.ftp FTP FTPClient FTPSClient FTPReply]))
 
 (defn- download!
@@ -109,3 +110,27 @@
           nil))
       (finally (when (.isConnected client*)
                  (.disconnect client*))))))
+
+(defn ^Session sftp-session
+  [url auth]
+  (let [u (uri/uri url)]
+    (doto (.getSession (JSch.) (:user auth) (:host u) (or (str->int (:port u)) 22))
+      (.setPassword ^String (:password auth))
+      (.setConfig "StrictHostKeyChecking" "no"))))
+
+(defn sftp-download!
+  [url f auth]
+  (let [u (uri/uri url)
+        session (sftp-session url auth)]
+    (try
+      (.connect session)
+      (let [^ChannelSftp channel (.openChannel session "sftp")]
+        (try
+          (.connect channel)
+          (let [[^ChannelSftp$LsEntry entry] (.ls channel (:path u))
+                content-len (.. entry getAttrs getSize)]
+            (with-open [is (.get channel (:path u))
+                        os (io/output-stream f)]
+              (download! is os content-len)))
+          (finally (.disconnect channel))))
+      (finally (.disconnect session)))))
