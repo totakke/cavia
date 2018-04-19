@@ -6,7 +6,7 @@
             [cavia.common :refer :all]
             [cavia.downloader :as dl]
             [cavia.decompressor :as dc]
-            [cavia.util :refer [delete-dir]]))
+            [cavia.internal :refer [delete-dir]]))
 
 (def skeleton-profile {:download-to ".cavia"})
 

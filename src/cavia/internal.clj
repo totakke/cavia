@@ -1,4 +1,4 @@
-(ns cavia.util
+(ns cavia.internal
   (:require [clojure.java.io :as io]))
 
 (defn str->int [s]

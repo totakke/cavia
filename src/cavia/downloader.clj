@@ -4,7 +4,7 @@
             [lambdaisland.uri :as uri]
             [progrock.core :as pr]
             [cavia.common :refer :all]
-            [cavia.util :refer [str->int]])
+            [cavia.internal :refer [str->int]])
   (:import [java.io InputStream OutputStream IOException]
            java.net.URLDecoder
            [com.jcraft.jsch ChannelSftp ChannelSftp$LsEntry JSch Session]
