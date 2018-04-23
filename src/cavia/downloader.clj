@@ -4,11 +4,11 @@
             [lambdaisland.uri :as uri]
             [progrock.core :as pr]
             [cavia.common :refer :all]
+            [cavia.ftp :as ftp]
             [cavia.internal :refer [str->int]])
   (:import [java.io InputStream OutputStream IOException]
-           java.net.URLDecoder
            [com.jcraft.jsch ChannelSftp ChannelSftp$LsEntry JSch Session]
-           [org.apache.commons.net.ftp FTP FTPClient FTPSClient FTPReply]))
+           [org.apache.commons.net.ftp FTPClient FTPReply]))
 
 (defn- download!
   "Downloads from the InputStream to the OutputStream. To print progress, it
@@ -40,28 +40,6 @@
     (with-open [os (io/output-stream f)]
       (download! is os content-len))))
 
-(defn- ^FTPClient ftp-client
-  [url]
-  (let [u (uri/uri url)
-        ^FTPClient client (case (:scheme u)
-                            "ftp" (FTPClient.)
-                            "ftps" (FTPSClient.)
-                            (throw (Exception. (str "unexpected protocol "
-                                                    (:scheme u)
-                                                    " in FTP url, need \"ftp\" or \"ftps\""))))]
-    (.connect client ^String (:host u) (int (or (str->int (:port u)) 21)))
-    (let [reply (.getReplyCode client)]
-      (if-not (FTPReply/isPositiveCompletion reply)
-        (do (.disconnect client)
-            (binding [*out* *err*]
-              (println "Connection refused"))
-            nil)
-        client))))
-
-(defn- url-decode
-  [s]
-  (if s (URLDecoder/decode s "UTF-8") ""))
-
 (defn- ftp-content-len
   [^FTPClient ftp-client path]
   (try
@@ -83,33 +61,20 @@
 (defn ftp-download!
   "Downloads from the url via FTP and saves it to local as f."
   [url f & {:keys [auth]}]
-  (when-let [client* (ftp-client url)]
+  (ftp/with-connection [client* (ftp/client url {:auth auth})]
+    (let [u (uri/uri url)
+          content-len (ftp-content-len client* (:path u))]
+      (with-open [is ^InputStream (.retrieveFileStream client* (:path u))
+                  os (io/output-stream f)]
+        (download! is os content-len)))
     (try
-      (if-let [{:keys [user password]} auth]
-        (.login client* (url-decode user) (url-decode password))
-        (.login client* "anonymous" nil))
-      (doto client*
-        (.setFileType FTP/BINARY_FILE_TYPE)
-        (.setControlKeepAliveTimeout 300)
-        (.setControlKeepAliveReplyTimeout 1000)
-        (.setSoTimeout 30000)
-        (.setDataTimeout 30000)
-        (.enterLocalPassiveMode))
-      (let [u (uri/uri url)
-            content-len (ftp-content-len client* (:path u))]
-        (with-open [is ^InputStream (.retrieveFileStream client* (:path u))
-                    os (io/output-stream f)]
-          (download! is os content-len)))
-      (try
-        (complete-pending-command client*)
-        (catch java.net.SocketTimeoutException e
-          ;; NOTE: `client-complete-pending-command` sometimes hangs after
-          ;;       downloading a large file. But the file is fine and the
-          ;;       downloading process succeded to finish. Therefore here
-          ;;       ignores the timeout.
-          nil))
-      (finally (when (.isConnected client*)
-                 (.disconnect client*))))))
+      (complete-pending-command client*)
+      (catch java.net.SocketTimeoutException e
+        ;; NOTE: `client-complete-pending-command` sometimes hangs after
+        ;;       downloading a large file. But the file is fine and the
+        ;;       downloading process succeded to finish. Therefore here
+        ;;       ignores the timeout.
+        nil))))
 
 (defn ^Session sftp-session
   [url auth]

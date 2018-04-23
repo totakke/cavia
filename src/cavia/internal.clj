@@ -1,5 +1,6 @@
 (ns cavia.internal
-  (:require [clojure.java.io :as io]))
+  (:require [clojure.java.io :as io])
+  (:import java.net.URLDecoder))
 
 (defn str->int [s]
   (if-not (nil? s)
@@ -16,3 +17,7 @@
       (doseq [path (.listFiles f)]
         (delete-dir path)))
     (if (.exists f) (io/delete-file root))))
+
+(defn url-decode
+  [^String s]
+  (if s (URLDecoder/decode s "UTF-8") ""))
