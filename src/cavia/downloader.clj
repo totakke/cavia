@@ -35,7 +35,7 @@
                         {(keyword (str (name type) "-auth")) [user password]}))
         response (client/get url option)
         content-len (if-let [content-len (get-in response [:headers "content-length"])]
-                      (str->int ^String content-len) -1)
+                      (str->int content-len) -1)
         is (:body response)]
     (with-open [os (io/output-stream f)]
       (download! is os content-len))))

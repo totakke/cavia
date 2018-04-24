@@ -3,12 +3,11 @@
   (:import java.net.URLDecoder))
 
 (defn str->int [s]
-  (if-not (nil? s)
+  (when (some? s)
     (try
-      (let [[n _ _] (re-matches #"(|-|\+)(\d+)" s)]
-        (Integer. ^String n))
-      (catch NumberFormatException e
-        (Long. ^String s)))))
+      (Integer/parseInt s)
+      (catch NumberFormatException _
+        (Long/parseLong s)))))
 
 (defn delete-dir
   [root]
