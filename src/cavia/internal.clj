@@ -20,3 +20,11 @@
 (defn url-decode
   [^String s]
   (if s (URLDecoder/decode s "UTF-8") ""))
+
+(defn parse-auth
+  [uri auth]
+  (cond
+    auth (-> auth
+             (update :user url-decode)
+             (update :password url-decode))
+    (or (:user uri) (:password uri)) (select-keys uri [:user :password])))
