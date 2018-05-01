@@ -1,5 +1,19 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Support SFTP protocol.
+
+### Changed
+
+- Move FTP client code to another ns.
+
+### Fixed
+
+- Fix integer coercion.
+
 ## [0.5.0] - 2018-03-26
 
 ### Added
