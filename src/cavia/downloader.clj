@@ -21,6 +21,7 @@
     (loop [len (.read is data)
            sum len
            bar (pr/progress-bar 100)]
+      (when (Thread/interrupted) (throw (InterruptedException.)))
       (if (= len -1)
         (when with-print (pr/print (pr/done bar)))
         (do
