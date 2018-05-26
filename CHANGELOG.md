@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.5.1] - 2018-05-26
 
 ### Added
 
@@ -9,6 +9,7 @@
 ### Changed
 
 - Move FTP client code to another ns.
+- Add thread interruption to download func.
 
 ### Fixed
 
@@ -167,7 +168,8 @@
 
 First release.
 
-[Unreleased]: https://github.com/totakke/cavia/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/totakke/cavia/compare/0.5.1...HEAD
+[0.5.1]: https://github.com/totakke/cavia/compare/0.5.0...0.5.1
 [0.5.0]: https://github.com/totakke/cavia/compare/0.4.3...0.5.0
 [0.4.3]: https://github.com/totakke/cavia/compare/0.4.2...0.4.3
 [0.4.2]: https://github.com/totakke/cavia/compare/0.4.1...0.4.2
