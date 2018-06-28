@@ -13,6 +13,7 @@
                  [progrock "0.1.2"]]
   :profiles {:dev {:dependencies [[org.mockftpserver/MockFtpServer "2.7.1"]]}
              :test {:dependencies [[org.slf4j/slf4j-nop "1.7.25"]]}
+             :1.10 {:dependencies [[org.clojure/clojure "1.10.0-alpha5"]]}
              :1.9 {:dependencies [[org.clojure/clojure "1.9.0"]]}
              :1.8 {:dependencies [[org.clojure/clojure "1.8.0"]]}}
   :signing {:gpg-key "roimisia@gmail.com"})

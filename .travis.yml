@@ -6,6 +6,16 @@ cache:
 jdk:
   - oraclejdk8
   - oraclejdk9
-  - openjdk7
+  - oraclejdk10
   - openjdk8
-script: lein with-profile +dev:+1.8:+1.9 test
+matrix:
+  include:
+    - jdk: openjdk9
+      before_install: &fix_certs
+        - rm "${JAVA_HOME}/lib/security/cacerts"
+        - ln -s /etc/ssl/certs/java/cacerts "${JAVA_HOME}/lib/security/cacerts"
+    - jdk: openjdk10
+      before_install: *fix_certs
+    - jdk: openjdk11
+      before_install: *fix_certs
+script: lein with-profile +dev:+1.8:+1.9:+1.10 test
