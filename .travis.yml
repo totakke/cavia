@@ -1,21 +1,17 @@
 language: clojure
-lein: 2.8.1
+lein: 2.9.1
 cache:
   directories:
     - $HOME/.m2
 jdk:
-  - oraclejdk8
-  - oraclejdk9
-  - oraclejdk10
   - openjdk8
-matrix:
-  include:
-    - jdk: openjdk9
-      before_install: &fix_certs
-        - rm "${JAVA_HOME}/lib/security/cacerts"
-        - ln -s /etc/ssl/certs/java/cacerts "${JAVA_HOME}/lib/security/cacerts"
-    - jdk: openjdk10
-      before_install: *fix_certs
-    - jdk: openjdk11
-      before_install: *fix_certs
+  - openjdk9
+  - openjdk10
+  - openjdk11
+  - openjdk12
+  - openjdk13
+  - openjdk14
+  - openjdk15
+  - openjdk16
+before_install: if [ -f "${JAVA_HOME}/lib/security/cacerts" -a -w  "${JAVA_HOME}/lib/security/cacerts" ]; then rm "${JAVA_HOME}/lib/security/cacerts" && ln -s /etc/ssl/certs/java/cacerts "${JAVA_HOME}/lib/security/cacerts"; fi
 script: lein with-profile +dev:+1.9:+1.10 test
