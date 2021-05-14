@@ -18,4 +18,4 @@ matrix:
       before_install: *fix_certs
     - jdk: openjdk11
       before_install: *fix_certs
-script: lein with-profile +dev:+1.8:+1.9:+1.10 test
+script: lein with-profile +dev:+1.9:+1.10 test
