@@ -173,6 +173,6 @@ with test frameworks like clojure.test,
 
 ## License
 
-Copyright © 2014-2018 Toshiki Takeuchi
+Copyright © 2014-2021 [Toshiki Takeuchi](https://totakke.net/)
 
 Distributed under the [Eclipse Public License version 1.0](LICENSE).
