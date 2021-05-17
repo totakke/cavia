@@ -15,11 +15,12 @@
 (defn- download!
   "Downloads from the InputStream to the OutputStream. To print progress, it
   requires the content length."
-  [^InputStream is ^OutputStream os content-len]
+  [^InputStream is ^OutputStream os content-len resume]
   (let [data (byte-array *download-buffer-size*)
-        with-print (and *verbose* (pos? content-len))]
+        with-print (and *verbose* (pos? content-len))
+        resume (or resume 0)]
     (loop [len (.read is data)
-           sum len
+           sum (+ resume len)
            bar (pr/progress-bar 100)]
       (when (Thread/interrupted) (throw (InterruptedException.)))
       (if (= len -1)
@@ -32,16 +33,18 @@
 
 (defn http-download!
   "Downloads from the url via HTTP/HTTPS and saves it to local as f."
-  [url f & {:keys [auth]}]
+  [url f & {:keys [auth resume]}]
   (let [option (merge {:as :stream}
                       (if-let [{:keys [type user password]} auth]
-                        {(keyword (str (name type) "-auth")) [user password]}))
+                        {(keyword (str (name type) "-auth")) [user password]})
+                      (when resume
+                        {:headers {:range (str "bytes=" resume "-")}}))
         response (client/get url option)
         content-len (if-let [content-len (get-in response [:headers "content-length"])]
                       (str->int content-len) -1)
         is (:body response)]
-    (with-open [os (io/output-stream f)]
-      (download! is os content-len))))
+    (with-open [os (io/output-stream f :append (boolean resume))]
+      (download! is os content-len resume))))
 
 (defn- ftp-content-len
   [^FTPClient ftp-client path]
@@ -69,7 +72,7 @@
           content-len (ftp-content-len client* (:path u))]
       (with-open [is ^InputStream (.retrieveFileStream client* (:path u))
                   os (io/output-stream f)]
-        (download! is os content-len)))
+        (download! is os content-len 0)))
     (try
       (complete-pending-command client*)
       (catch java.net.SocketTimeoutException e
@@ -88,4 +91,4 @@
           content-len (.. entry getAttrs getSize)]
       (with-open [is (.get channel (:path u))
                   os (io/output-stream f)]
-        (download! is os content-len)))))
+        (download! is os content-len 0)))))

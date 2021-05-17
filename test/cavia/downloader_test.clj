@@ -1,6 +1,6 @@
 (ns cavia.downloader-test
   (:require [clojure.test :refer :all]
-            [clojure.java.io :refer [file]]
+            [clojure.java.io :as io]
             [digest]
             [cavia.test-util :refer :all]
             [cavia.downloader :as dl]))
@@ -32,7 +32,7 @@
 
 (defn- sha1-file
   [f]
-  (digest/sha1 (file f)))
+  (digest/sha1 (io/file f)))
 
 ;;;
 ;;; Tests
@@ -42,7 +42,13 @@
   (testing "returns nil when finishing successfully "
     (is (nil? (dl/http-download! http-test-url http-test-local))))
   (testing "check the resource's hash"
-    (is (= (sha1-file http-test-local) http-test-hash))))
+    (is (= (sha1-file http-test-local) http-test-hash)))
+  (testing "resume"
+    (let [http-test-fragment (str temp-dir "/http-test-resource-fragment")]
+      (io/copy (io/file (io/resource "test.png.download")) (io/file http-test-fragment))
+      (is (nil? (dl/http-download! http-test-url http-test-fragment
+                                   :resume (.length (io/file http-test-fragment)))))
+      (is (= (sha1-file http-test-fragment) http-test-hash)))))
 
 (deftest ftp-download!-test
   (testing "returns nil when finishing successfully "
