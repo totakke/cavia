@@ -1,5 +1,19 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Add resume option to http downloader.
+
+### Changed
+
+- Increase default buffer size for downloading (1024 bytes -> 4096 bytes).
+
+### Removed
+
+- Drop support for clojure 1.7 and 1.8.
+
 ## [0.5.1] - 2018-05-26
 
 ### Added
