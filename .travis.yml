@@ -1,5 +1,5 @@
 language: clojure
-lein: 2.9.1
+lein: 2.9.6
 cache:
   directories:
     - $HOME/.m2
@@ -14,4 +14,4 @@ jdk:
   - openjdk15
   - openjdk16
 before_install: if [ -f "${JAVA_HOME}/lib/security/cacerts" -a -w  "${JAVA_HOME}/lib/security/cacerts" ]; then rm "${JAVA_HOME}/lib/security/cacerts" && ln -s /etc/ssl/certs/java/cacerts "${JAVA_HOME}/lib/security/cacerts"; fi
-script: lein with-profile +dev:+1.9:+1.10 test
+script: lein with-profile +dev:+1.10 test
