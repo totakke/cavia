@@ -22,10 +22,16 @@ functions to access the resources.
 
 Cavia is available as a Maven artifact from [Clojars](http://clojars.org/cavia).
 
-With Leiningen/Boot:
+Clojure CLI/deps.edn:
 
 ```clojure
-[cavia "0.5.1"]
+cavia/cavia {:mvn/version "0.6.0"}
+```
+
+Leiningen/Boot:
+
+```clojure
+[cavia "0.6.0"]
 ```
 
 ## Usage
