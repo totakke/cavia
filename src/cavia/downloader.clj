@@ -15,7 +15,7 @@
 (defn- download!
   "Downloads from the InputStream to the OutputStream. To print progress, it
   requires the content length."
-  [^InputStream is ^OutputStream os content-len resume]
+  [^InputStream is ^OutputStream os content-len resume hook-fn]
   (let [data (byte-array *download-buffer-size*)
         with-print (and *verbose* (pos? content-len))
         resume (or resume 0)]
@@ -23,6 +23,7 @@
            sum (+ resume len)
            bar (pr/progress-bar 100)]
       (when (Thread/interrupted) (throw (InterruptedException.)))
+      (when hook-fn (hook-fn sum))
       (if (= len -1)
         (when with-print (pr/print (pr/done bar)))
         (do
@@ -44,7 +45,16 @@
                       (str->int content-len) -1)
         is (:body response)]
     (with-open [os (io/output-stream f :append (boolean resume))]
-      (download! is os content-len resume))))
+      (download! is os content-len resume nil))))
+
+(defn- keep-alive-hook
+  [^FTPClient ftp-client keep-alive-timeout]
+  (let [t (atom (System/currentTimeMillis))]
+    (fn [_]
+      (let [now (System/currentTimeMillis)]
+        (when (> (- now @t) keep-alive-timeout)
+          (.sendNoOp ftp-client)
+          (reset! t now))))))
 
 (defn- ftp-content-len
   [^FTPClient ftp-client path]
@@ -69,10 +79,11 @@
   [url f & {:keys [auth]}]
   (util/with-connection [client* (ftp/client url {:auth auth})]
     (let [u (uri/uri url)
-          content-len (ftp-content-len client* (:path u))]
+          content-len (ftp-content-len client* (:path u))
+          keep-alive (keep-alive-hook client* (* (.getControlKeepAliveTimeout client*) 1000))]
       (with-open [is ^InputStream (.retrieveFileStream client* (:path u))
                   os (io/output-stream f)]
-        (download! is os content-len 0)))
+        (download! is os content-len 0 keep-alive)))
     (try
       (complete-pending-command client*)
       (catch java.net.SocketTimeoutException e
@@ -91,4 +102,4 @@
           content-len (.. entry getAttrs getSize)]
       (with-open [is (.get channel (:path u))
                   os (io/output-stream f)]
-        (download! is os content-len 0)))))
+        (download! is os content-len 0 nil)))))
