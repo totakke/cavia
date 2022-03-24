@@ -11,7 +11,7 @@
                  [lambdaisland/uri "1.4.54"]
                  [org.apache.commons/commons-compress "1.20"]
                  [progrock "0.1.2"]]
-  :profiles {:dev {:dependencies [[org.mockftpserver/MockFtpServer "2.8.0"]]}
-             :test {:dependencies [[org.slf4j/slf4j-nop "1.7.30"]]}
-             :1.10 {:dependencies [[org.clojure/clojure "1.10.3"]]}}
+  :test-selectors {:default (complement :integration)
+                   :integration :integration}
+  :profiles {:1.10 {:dependencies [[org.clojure/clojure "1.10.3"]]}}
   :signing {:gpg-key "roimisia@gmail.com"})

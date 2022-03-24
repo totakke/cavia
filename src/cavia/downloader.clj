@@ -66,13 +66,15 @@
 
 (defn ftp-download!
   "Downloads from the url via FTP and saves it to local as f."
-  [url f & {:keys [auth]}]
+  [url f & {:keys [auth resume]}]
   (util/with-connection [client* (ftp/client url {:auth auth})]
     (let [u (uri/uri url)
           content-len (ftp-content-len client* (:path u))]
+      (when resume
+        (.setRestartOffset client* resume))
       (with-open [is ^InputStream (.retrieveFileStream client* (:path u))
-                  os (io/output-stream f)]
-        (download! is os content-len 0)))
+                  os (io/output-stream f :append (boolean resume))]
+        (download! is os content-len resume)))
     (try
       (complete-pending-command client*)
       (catch java.net.SocketTimeoutException e
