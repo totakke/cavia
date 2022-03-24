@@ -48,6 +48,11 @@
       (io/copy (io/file (io/resource "test.png.download")) (io/file test-fragment))
       (is (nil? (dl/http-download! http-test-url test-fragment
                                    :resume (.length (io/file test-fragment)))))
+      (is (= (sha1-file test-fragment) http-test-hash))
+
+      (io/copy (io/file (io/resource "test.png.download")) (io/file test-fragment))
+      (is (nil? (dl/http-download! http-test-url test-fragment
+                                   :resume true)))
       (is (= (sha1-file test-fragment) http-test-hash)))))
 
 (deftest ^:integration ftp-download!-test
@@ -61,4 +66,10 @@
       (is (nil? (dl/ftp-download! ftp-test-url test-fragment
                                   :auth ftp-test-auth
                                   :resume (.length (io/file test-fragment)))))
+      (is (= (sha1-file test-fragment) ftp-test-hash))
+
+      (io/copy (io/file (io/resource "test.png.download")) (io/file test-fragment))
+      (is (nil? (dl/ftp-download! ftp-test-url test-fragment
+                                  :auth ftp-test-auth
+                                  :resume true)))
       (is (= (sha1-file test-fragment) ftp-test-hash)))))

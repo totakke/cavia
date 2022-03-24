@@ -32,9 +32,20 @@
             (recur len (+ sum len) (assoc bar :progress (quot (* sum 100) content-len)))))))))
 
 (defn http-download!
-  "Downloads from the url via HTTP/HTTPS and saves it to local as f."
+  "Downloads from the url via HTTP/HTTPS and saves it to local as f.
+
+  Options:
+
+    :auth    Username and password for Basic/Digest authentications.
+             e.g. {:type :basic, :user \"user\", :password \"password\"}
+
+    :resume  Resume downloading a partially downloaded file if true. You can
+             also specify a resuming byte position as an integer."
   [url f & {:keys [auth resume]}]
-  (let [option (merge {:as :stream}
+  (let [file (io/file f)
+        resume (when (.exists file)
+                 (if (true? resume) (.length file) resume))
+        option (merge {:as :stream}
                       (if-let [{:keys [type user password]} auth]
                         {(keyword (str (name type) "-auth")) [user password]})
                       (when resume
@@ -43,7 +54,7 @@
         content-len (if-let [content-len (get-in response [:headers "content-length"])]
                       (str->int content-len) -1)
         is (:body response)]
-    (with-open [os (io/output-stream f :append (boolean resume))]
+    (with-open [os (io/output-stream file :append (boolean resume))]
       (download! is os content-len resume))))
 
 (defn- ftp-content-len
@@ -65,15 +76,26 @@
                        :reply-string (.getReplyString ftp-client)})))))
 
 (defn ftp-download!
-  "Downloads from the url via FTP and saves it to local as f."
+  "Downloads from the url via FTP and saves it to local as f.
+
+  Options:
+
+    :auth    Username and password for FTP authentication.
+             e.g. {:user \"user\", :password \"password\"}
+
+    :resume  Resume downloading a partially downloaded file if true. You can
+             also specify a resuming byte position as an integer."
   [url f & {:keys [auth resume]}]
   (util/with-connection [client* (ftp/client url {:auth auth})]
-    (let [u (uri/uri url)
+    (let [file (io/file f)
+          resume (when (.exists file)
+                   (if (true? resume) (.length file) resume))
+          u (uri/uri url)
           content-len (ftp-content-len client* (:path u))]
       (when resume
         (.setRestartOffset client* resume))
       (with-open [is ^InputStream (.retrieveFileStream client* (:path u))
-                  os (io/output-stream f :append (boolean resume))]
+                  os (io/output-stream file :append (boolean resume))]
         (download! is os content-len resume)))
     (try
       (complete-pending-command client*)
