@@ -1,0 +1,20 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'adopt'
+        java-version: '17'
+    - name: Setup Clojure
+      uses: DeLaGuardo/setup-clojure@4.0
+      with:
+        lein: '2.9.8'
+    - name: Run tests
+      run: lein with-profile +dev:+1.10 test

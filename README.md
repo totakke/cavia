@@ -1,7 +1,7 @@
 # Cavia
 
 [![Clojars Project](https://img.shields.io/clojars/v/cavia.svg)](https://clojars.org/cavia)
-[![Build Status](https://travis-ci.org/totakke/cavia.svg?branch=master)](https://travis-ci.org/totakke/cavia)
+[![build](https://github.com/totakke/cavia/actions/workflows/build.yml/badge.svg)](https://github.com/totakke/cavia/actions/workflows/build.yml)
 
 Test resource manager for Clojure project.
 
@@ -179,6 +179,6 @@ with test frameworks like clojure.test,
 
 ## License
 
-Copyright © 2014-2021 [Toshiki Takeuchi](https://totakke.net/)
+Copyright © 2014-2022 [Toshiki Takeuchi](https://totakke.net/)
 
 Distributed under the [Eclipse Public License version 1.0](LICENSE).
