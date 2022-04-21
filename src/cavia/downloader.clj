@@ -3,7 +3,7 @@
             [clj-http.client :as client]
             [lambdaisland.uri :as uri]
             [progrock.core :as pr]
-            [cavia.common :refer :all]
+            [cavia.common :refer [*download-buffer-size* *verbose*]]
             [cavia.ftp :as ftp]
             [cavia.internal :refer [str->int]]
             [cavia.sftp :as sftp]
@@ -36,8 +36,9 @@
 
   Options:
 
-    :auth    Username and password for Basic/Digest authentications.
+    :auth    Credentials for Basic/Digest/OAuth2 authentications.
              e.g. {:type :basic, :user \"user\", :password \"password\"}
+                  {:type :oauth2, :token \"access-token\"}
 
     :resume  Resume downloading a partially downloaded file if true. You can
              also specify a resuming byte position as an integer."
@@ -46,8 +47,11 @@
         resume (when (.exists file)
                  (if (true? resume) (.length file) resume))
         option (merge {:as :stream}
-                      (if-let [{:keys [type user password]} auth]
-                        {(keyword (str (name type) "-auth")) [user password]})
+                      (case (:type auth)
+                        :basic {:basic-auth [(:user auth) (:password auth)]}
+                        :digest {:digest-auth [(:user auth) (:password auth)]}
+                        :oauth2 {:oauth-token (:token auth)}
+                        nil)
                       (when resume
                         {:headers {:range (str "bytes=" resume "-")}}))
         response (client/get url option)
@@ -99,7 +103,7 @@
         (download! is os content-len resume)))
     (try
       (complete-pending-command client*)
-      (catch java.net.SocketTimeoutException e
+      (catch java.net.SocketTimeoutException _
         ;; NOTE: `client-complete-pending-command` sometimes hangs after
         ;;       downloading a large file. But the file is fine and the
         ;;       downloading process succeded to finish. Therefore here
