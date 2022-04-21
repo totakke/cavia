@@ -15,10 +15,10 @@
 (defn- download!
   "Downloads from the InputStream to the OutputStream. To print progress, it
   requires the content length."
-  [^InputStream is ^OutputStream os content-len resume]
+  [^InputStream is ^OutputStream os ^long content-len resume]
   (let [data (byte-array *download-buffer-size*)
         with-print (and *verbose* (pos? content-len))
-        resume (or resume 0)]
+        ^long resume (or resume 0)]
     (loop [len (.read is data)
            sum (+ resume len)
            bar (pr/progress-bar 100)]
