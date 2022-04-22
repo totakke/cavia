@@ -25,13 +25,13 @@ Cavia is available as a Maven artifact from [Clojars](http://clojars.org/cavia).
 Clojure CLI/deps.edn:
 
 ```clojure
-cavia/cavia {:mvn/version "0.6.0"}
+cavia/cavia {:mvn/version "0.6.1"}
 ```
 
 Leiningen/Boot:
 
 ```clojure
-[cavia "0.6.0"]
+[cavia "0.6.1"]
 ```
 
 ## Usage
