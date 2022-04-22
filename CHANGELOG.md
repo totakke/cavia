@@ -1,5 +1,17 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Add resume option to FTP downloader.
+- Support OAuth2 token.
+
+### Changed
+
+- Allow to pass true to resume option.
+- Enable resume for cavia.core/get!.
+
 ## [0.6.0] - 2021-05-18
 
 ### Added
