@@ -18,7 +18,8 @@
   [^InputStream is ^OutputStream os ^long content-len resume]
   (let [data (byte-array *download-buffer-size*)
         with-print (and *verbose* (pos? content-len))
-        ^long resume (or resume 0)]
+        ^long resume (or resume 0)
+        size (+ content-len resume)]
     (loop [len (.read is data)
            sum (+ resume len)
            bar (pr/progress-bar 100)]
@@ -29,7 +30,7 @@
           (when with-print (pr/print bar))
           (.write os data 0 len)
           (let [len (.read is data)]
-            (recur len (+ sum len) (assoc bar :progress (quot (* sum 100) content-len)))))))))
+            (recur len (+ sum len) (assoc bar :progress (quot (* sum 100) size)))))))))
 
 (defn http-download!
   "Downloads from the url via HTTP/HTTPS and saves it to local as f.
