@@ -267,8 +267,8 @@
     (when *verbose*
       (println (format "Retrieving %s from %s" id url)))
     (condp #(%1 %2) (:scheme (uri/uri url))
-      #{"http" "https"} (dl/http-download! url dl-f :auth auth)
-      #{"ftp" "ftps"}   (dl/ftp-download! url dl-f :auth auth)
+      #{"http" "https"} (dl/http-download! url dl-f :auth auth :resume true)
+      #{"ftp" "ftps"}   (dl/ftp-download! url dl-f :auth auth :resume true)
       #{"sftp"}         (dl/sftp-download! url dl-f auth)
       (throw (java.net.MalformedURLException. "Unsupported protocol")))
     (if packed
