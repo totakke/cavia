@@ -3,7 +3,7 @@
 [![Clojars Project](https://img.shields.io/clojars/v/cavia.svg)](https://clojars.org/cavia)
 [![build](https://github.com/totakke/cavia/actions/workflows/build.yml/badge.svg)](https://github.com/totakke/cavia/actions/workflows/build.yml)
 
-Test resource manager for Clojure project.
+Remote resource management for Clojure projects.
 
 ## Rationale
 
@@ -77,7 +77,7 @@ algorithm must be specified at least. If more than one algorithm are specified,
 a stronger algorithm will be used: MD5 < SHA1 < SHA256.
 
 `:auth` field is optional. It can be used for password authentication.
-Cavia is now supporting HTTP/HTTPS/FTP/FTPS protocols and Basic/Digest
+Cavia is now supporting HTTP/HTTPS/FTP/FTPS protocols and Basic/Digest/OAuth2
 authentications. A resource that `:packed` specified will be uncompressed after
 downloading. Only gzip (`:gzip`) format is supported.
 
