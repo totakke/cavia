@@ -6,7 +6,8 @@
             [cavia.common :refer :all]
             [cavia.downloader :as dl]
             [cavia.decompressor :as dc]
-            [cavia.internal :refer [delete-dir]]))
+            [cavia.internal :refer [delete-dir]])
+  (:import java.net.MalformedURLException))
 
 (def skeleton-profile {:download-to ".cavia"})
 
@@ -28,8 +29,13 @@
                       :sha256 \"23456789abcdef01234567890abcdef01234567890abcdef01234567890abcde\"
                       :auth {:user \"user\", :password \"password\"}}
                      {:id :resource4
-                      :url \"http://example.com/resource4.gz\"
+                      :url \"https://bucket-name.s3.region.amazonaws.com/resource4\"
                       :sha1 \"3456789abcdef01234567890abcdef0123456789\"
+                      :protocol :s3
+                      :auth {:access-key-id \"accesskey\", :secret-access-key \"secretkey\"}}
+                     {:id :resource5
+                      :url \"http://example.com/resource5.gz\"
+                      :sha1 \"456789abcdef01234567890abcdef0123456789a\"
                       :packed :gzip}]
         :download-to \".cavia\"})"
   [name profile]
@@ -258,19 +264,27 @@
 
 ;; ## Download
 
+(defn- detect-protocol
+  [url]
+  (case (:scheme (uri/uri url))
+    ("http" "https") :http
+    ("ftp" "ftps") :ftp
+    "sftp" :sftp
+    (throw (MalformedURLException. "Unsupported protocol"))))
+
 (defn- get-resource
   [profile id]
   (let [f    (resource profile id)
         dl-f (resource-download profile id)
         uv-f (resource-unverified profile id)
-        {:keys [url auth packed], :as r} (resource-info profile id)]
+        {:keys [url protocol auth packed], :as r} (resource-info profile id)]
     (when *verbose*
       (println (format "Retrieving %s from %s" id url)))
-    (condp #(%1 %2) (:scheme (uri/uri url))
-      #{"http" "https"} (dl/http-download! url dl-f :auth auth :resume true)
-      #{"ftp" "ftps"}   (dl/ftp-download! url dl-f :auth auth :resume true)
-      #{"sftp"}         (dl/sftp-download! url dl-f auth)
-      (throw (java.net.MalformedURLException. "Unsupported protocol")))
+    (case (or protocol (detect-protocol url))
+      :http (dl/http-download! url dl-f :auth auth :resume true)
+      :ftp (dl/ftp-download! url dl-f :auth auth :resume true)
+      :sftp (dl/sftp-download! url dl-f auth)
+      :s3 (dl/s3-download! url dl-f auth :resume true))
     (if packed
       (do (dc/decompress dl-f uv-f packed)
           (io/delete-file dl-f))

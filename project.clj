@@ -5,6 +5,9 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [clj-http "3.12.3"]
+                 [com.cognitect.aws/api "0.8.561"]
+                 [com.cognitect.aws/endpoints "1.1.12.230"]
+                 [com.cognitect.aws/s3 "822.2.1145.0"]
                  [com.jcraft/jsch "0.1.55"]
                  [commons-net "3.8.0"]
                  [digest "1.4.10"]

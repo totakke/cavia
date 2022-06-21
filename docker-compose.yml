@@ -13,3 +13,23 @@ services:
     - "30000-30009:30000-30009"
     volumes:
     - ./docker/ftp:/home/user
+
+  minio:
+    image: minio/minio
+    ports:
+    - "9000:9000"
+    - "9001:9001"
+    command: server /data --console-address ":9001"
+
+  minio-preparation:
+    image: minio/mc
+    depends_on:
+    - minio
+    volumes:
+    - ./docker/minio:/data
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc config host add myminio http://minio:9000 minioadmin minioadmin) do echo '...waiting...' && sleep 1; done;
+      /usr/bin/mc mb myminio/cavia;
+      /usr/bin/mc cp /data/test.png myminio/cavia;
+      exit 0;"

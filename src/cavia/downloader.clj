@@ -1,6 +1,8 @@
 (ns cavia.downloader
   (:require [clojure.java.io :as io]
             [clj-http.client :as client]
+            [cognitect.aws.client.api :as aws]
+            [cognitect.aws.credentials :as credentials]
             [lambdaisland.uri :as uri]
             [progrock.core :as pr]
             [cavia.common :refer [*download-buffer-size* *verbose*]]
@@ -9,6 +11,7 @@
             [cavia.sftp :as sftp]
             [cavia.util :as util])
   (:import [java.io InputStream OutputStream IOException]
+           java.net.MalformedURLException
            [com.jcraft.jsch ChannelSftp$LsEntry]
            [org.apache.commons.net.ftp FTPClient FTPReply]))
 
@@ -121,3 +124,58 @@
       (with-open [is (.get channel (:path u))
                   os (io/output-stream f)]
         (download! is os content-len 0)))))
+
+(defn- s3-client
+  [url auth]
+  (let [u (uri/uri url)
+        endpoint (when-not (re-find #"s3[-\.][-\da-z]+\.amazonaws\.com" (:host u))
+                   {:protocol (:scheme u)
+                    :hostname (:host u)
+                    :port (str->int (:port u))})
+        [_ region] (re-find #"s3[-\.]([-\da-z]+)\.amazonaws\.com" (:host u))
+        creds (credentials/basic-credentials-provider auth)]
+    (aws/client (cond-> {:api :s3
+                         :credentials-provider creds}
+                  endpoint (assoc :endpoint-override endpoint)
+                  region (assoc :region region)))))
+
+(defn- s3-bucket-key
+  [url]
+  (let [u (uri/uri url)]
+    (if-let [[_ bucket]
+             (re-matches
+              #"([\da-z][-.\da-z]{2,62})\.s3([-\.][-\da-z]+)?\.amazonaws\.com"
+              (:host u))]
+      {:bucket bucket, :key (second (re-matches #"/(.+)" (:path u)))}
+      (if-let [[_ bucket key] (re-matches #"/([\da-z][-.\da-z]{2,62})/(.+)"
+                                          (:path u))]
+        {:bucket bucket, :key key}
+        (throw (MalformedURLException. "Illegal format of a bucket and a key"))))))
+
+(defn s3-download!
+  "Downloads from the url via S3 protocol and saves it to local as f. The auth
+  format is {:access-key-id \"accesskey\" :secret-access-key \"secretkey\"}.
+
+  Options:
+
+    :resume  Resume downloading a partially downloaded file if true. You can
+             also specify a resuming byte position as an integer."
+  [url f auth & {:keys [resume]}]
+  (let [s3 (s3-client url auth)
+        {:keys [bucket key]} (s3-bucket-key url)
+        file (io/file f)
+        resume (when (.exists file)
+                 (if (true? resume) (.length file) resume))
+        range (when resume
+                (str "bytes=" resume "-"))
+        content-len (:ContentLength
+                     (aws/invoke s3 {:op :HeadObject
+                                     :request {:Bucket bucket :Key key}}))]
+    (with-open [is ^InputStream (:Body
+                                 (aws/invoke
+                                  s3
+                                  {:op :GetObject
+                                   :request (cond-> {:Bucket bucket :Key key}
+                                              range (assoc :Range range))}))
+                os (io/output-stream file :append (boolean resume))]
+      (download! is os content-len resume))))
