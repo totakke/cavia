@@ -2,7 +2,7 @@
   (:require [clojure.test :refer :all]
             [clojure.java.io :as io]
             [cavia.test-util :refer :all]
-            [cavia.core :as cavia :refer [defprofile with-profile without-print]]))
+            [cavia.core :as cavia :refer [defprofile with-profile]]))
 
 (defprofile test-prof
   {:resources [{:id :test-resource

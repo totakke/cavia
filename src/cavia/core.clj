@@ -73,10 +73,10 @@
 (defn- resource*
   [profile id]
   (let [{:keys [resources download-to]} profile]
-    (if-let [id* (->> resources
-                      (filter #(= (:id %) id))
-                      (first)
-                      (:id))]
+    (when-let [id* (->> resources
+                        (filter #(= (:id %) id))
+                        (first)
+                        (:id))]
       (.getAbsolutePath (io/file (str download-to "/" (name id*)))))))
 
 (defn- resource-download [profile id]

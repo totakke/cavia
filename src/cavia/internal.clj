@@ -15,7 +15,8 @@
     (when (.isDirectory f)
       (doseq [path (.listFiles f)]
         (delete-dir path)))
-    (if (.exists f) (io/delete-file root))))
+    (when (.exists f)
+      (io/delete-file root))))
 
 (defn url-decode
   [^String s]

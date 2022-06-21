@@ -1,9 +1,10 @@
 (ns cavia.ftp
   (:require [lambdaisland.uri :as uri]
-            [cavia.internal :refer [str->int url-decode parse-auth]])
+            [cavia.internal :refer [str->int parse-auth]])
   (:import [org.apache.commons.net.ftp FTP FTPClient FTPSClient FTPReply]))
 
-(defn ^FTPClient client
+(defn client
+  ^FTPClient
   [url & [{:keys [auth file-type local-mode]
            :or {file-type :binary, local-mode :passive}}]]
   (let [u (uri/uri url)

@@ -1,9 +1,10 @@
 (ns cavia.sftp
   (:require [lambdaisland.uri :as uri]
-            [cavia.internal :refer [str->int url-decode parse-auth]])
+            [cavia.internal :refer [str->int parse-auth]])
   (:import [com.jcraft.jsch ChannelSftp JSch Session]))
 
-(defn ^Session session
+(defn session
+  ^Session
   [url & [{:keys [auth]}]]
   (let [u (uri/uri url)
         auth (parse-auth u auth)
@@ -13,7 +14,8 @@
       (.setConfig "StrictHostKeyChecking" "no")
       (.connect))))
 
-(defn ^ChannelSftp channel
+(defn channel
+  ^ChannelSftp
   [^Session session]
   (doto (.openChannel session "sftp")
     (.connect)))
