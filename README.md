@@ -25,16 +25,16 @@ Cavia is available as a Maven artifact from [Clojars](http://clojars.org/cavia).
 Clojure CLI/deps.edn:
 
 ```clojure
-cavia/cavia {:mvn/version "0.6.1"}
+cavia/cavia {:mvn/version "0.6.2"}
 ```
 
 Leiningen/Boot:
 
 ```clojure
-[cavia "0.6.1"]
+[cavia "0.6.2"]
 ```
 
-## Usage
+## Basic usage
 
 ### Define resources profile
 
@@ -49,20 +49,30 @@ macro.
                {:id :resource1
                 :url "http://example.com/resource1"
                 :sha256 "0123456789abcdef01234567890abcdef01234567890abcdef01234567890abc"}
+
                ;; Basic authorization
                {:id :resource2
                 :url "http://example.com/resource2"
                 :sha1 "123456789abcdef01234567890abcdef01234567"
                 :auth {:type :basic, :user "user", :password "password"}}
+
                ;; FTP
                {:id :resource3
                 :url "ftp://example.com/resource3"
                 :sha256 "23456789abcdef01234567890abcdef01234567890abcdef01234567890abcde"
                 :auth {:user "user", :password "password"}}
-               ;; Compressed source
+
+               ;; S3
                {:id :resource4
-                :url "http://example.com/resource4.gz"
+                :url "https://bucket-name.s3.region.amazonaws.com/resource4"
                 :sha1 "3456789abcdef01234567890abcdef0123456789"
+                :protocol :s3
+                :auth {:access-key-id "accesskey", :secret-access-key "secretkey"}}
+
+               ;; Compressed resource
+               {:id :resource5
+                :url "http://example.com/resource5.gz"
+                :sha1 "456789abcdef01234567890abcdef0123456789a"
                 :packed :gzip}]
    :download-to ".cavia"})
 ```
@@ -77,7 +87,7 @@ algorithm must be specified at least. If more than one algorithm are specified,
 a stronger algorithm will be used: MD5 < SHA1 < SHA256.
 
 `:auth` field is optional. It can be used for password authentication.
-Cavia is now supporting HTTP/HTTPS/FTP/FTPS protocols and Basic/Digest/OAuth2
+Cavia is now supporting HTTP/HTTPS/FTP/FTPS/S3 protocols and Basic/Digest/OAuth2
 authentications. A resource that `:packed` specified will be uncompressed after
 downloading. Only gzip (`:gzip`) format is supported.
 
@@ -127,7 +137,7 @@ returns `nil` when the id is not defined.
 ;;=> nil
 ```
 
-## Example usage with test frameworks
+## Integration with test frameworks
 
 Cavia is a library for management of test resources. It is good to use Cavia
 with test frameworks like clojure.test,
@@ -175,6 +185,26 @@ with test frameworks like clojure.test,
       (slurp (cavia/resource :resource1) => "resource1's content")))
 
   )
+```
+
+## Use as a simple downloader
+
+Cavia provides features of file downloading as independent functions.
+
+```clojure
+(require '[cavia.downloader as dl])
+
+(dl/http-download! "http://example.com/foobar.txt" "path/to/output")
+```
+
+HTTP/HTTPS, FTP/FTPS, and S3 downloading functions support a resume option. If
+you specify `:resume true`, the functions resume downloading a partially
+downloaded file.
+
+```clojure
+(dl/s3-download! "https://foo.s3-us-east-1.amazonaws.com/bar/foobar.txt"
+                 {:access-key-id "accesskey", :secret-access-key "secretkey"}
+                 :resume true)
 ```
 
 ## License
