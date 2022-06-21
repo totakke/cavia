@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+
+- Support S3 protocol.
+
 ## [0.6.1] - 2022-04-22
 
 ### Added
