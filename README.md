@@ -195,7 +195,7 @@ Cavia provides features of file downloading as independent functions.
 ```clojure
 (require '[cavia.downloader as dl])
 
-(dl/http-download! "http://example.com/foobar.txt" "path/to/output")
+(dl/http-download! "http://example.com/foobar.txt" "path/to/foobar.txt")
 ```
 
 HTTP/HTTPS, FTP/FTPS, and S3 downloading functions support a resume option. If
@@ -203,7 +203,8 @@ you specify `:resume true`, the functions resume downloading a partially
 downloaded file.
 
 ```clojure
-(dl/s3-download! "https://foo.s3-us-east-1.amazonaws.com/bar/foobar.txt"
+(dl/s3-download! "https://foo.s3.region.amazonaws.com/bar/foobar.txt"
+                 "path/to/foobar.txt"
                  {:access-key-id "accesskey", :secret-access-key "secretkey"}
                  :resume true)
 ```
