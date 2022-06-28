@@ -1,6 +1,7 @@
 # Cavia
 
 [![Clojars Project](https://img.shields.io/clojars/v/cavia.svg)](https://clojars.org/cavia)
+[![cljdoc badge](https://cljdoc.org/badge/cavia/cavia)](https://cljdoc.org/d/cavia/cavia)
 [![build](https://github.com/totakke/cavia/actions/workflows/build.yml/badge.svg)](https://github.com/totakke/cavia/actions/workflows/build.yml)
 
 Remote resource management for Clojure projects.
