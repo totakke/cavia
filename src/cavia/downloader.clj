@@ -36,16 +36,16 @@
             (recur len (+ sum len) (assoc bar :progress (quot (* sum 100) size)))))))))
 
 (defn http-download!
-  "Downloads from the url via HTTP/HTTPS and saves it to local as f.
+  "Downloads from the `url` via HTTP/HTTPS and saves it to local as `f`.
 
   Options:
 
-    :auth    Credentials for Basic/Digest/OAuth2 authentications.
-             e.g. {:type :basic, :user \"user\", :password \"password\"}
-                  {:type :oauth2, :token \"access-token\"}
+      :auth    Credentials for Basic/Digest/OAuth2 authentications.
+               e.g. {:type :basic, :user \"user\", :password \"password\"}
+                    {:type :oauth2, :token \"access-token\"}
 
-    :resume  Resume downloading a partially downloaded file if true. You can
-             also specify a resuming byte position as an integer."
+      :resume  Resume downloading a partially downloaded file if true. You can
+               also specify a resuming byte position as an integer."
   [url f & {:keys [auth resume]}]
   (let [file (io/file f)
         resume (when (.exists file)
@@ -84,15 +84,15 @@
                        :reply-string (.getReplyString ftp-client)})))))
 
 (defn ftp-download!
-  "Downloads from the url via FTP and saves it to local as f.
+  "Downloads from the `url` via FTP and saves it to local as `f`.
 
   Options:
 
-    :auth    Username and password for FTP authentication.
-             e.g. {:user \"user\", :password \"password\"}
+      :auth    Username and password for FTP authentication.
+               e.g. {:user \"user\", :password \"password\"}
 
-    :resume  Resume downloading a partially downloaded file if true. You can
-             also specify a resuming byte position as an integer."
+      :resume  Resume downloading a partially downloaded file if true. You can
+               also specify a resuming byte position as an integer."
   [url f & {:keys [auth resume]}]
   (util/with-connection [client* (ftp/client url {:auth auth})]
     (let [file (io/file f)
@@ -115,6 +115,7 @@
         nil))))
 
 (defn sftp-download!
+  "Downloads from the `url` via SFTP and saves it to local as `f`."
   [url f auth]
   (util/with-connection [session (sftp/session url {:auth auth})
                          channel (sftp/channel session)]
@@ -153,13 +154,15 @@
         (throw (MalformedURLException. "Illegal format of a bucket and a key"))))))
 
 (defn s3-download!
-  "Downloads from the url via S3 protocol and saves it to local as f. The auth
-  format is {:access-key-id \"accesskey\" :secret-access-key \"secretkey\"}.
+  "Downloads from the `url` via S3 protocol and saves it to local as `f`.
+
+  The `auth` format is
+  `{:access-key-id \"accesskey\", :secret-access-key \"secretkey\"}`.
 
   Options:
 
-    :resume  Resume downloading a partially downloaded file if true. You can
-             also specify a resuming byte position as an integer."
+      :resume  Resume downloading a partially downloaded file if true. You can
+               also specify a resuming byte position as an integer."
   [url f auth & {:keys [resume]}]
   (let [s3 (s3-client url auth)
         {:keys [bucket key]} (s3-bucket-key url)

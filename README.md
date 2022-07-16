@@ -35,9 +35,11 @@ Leiningen/Boot:
 [cavia "0.6.2"]
 ```
 
-## Basic usage
+## Usage
 
-### Define resources profile
+### Basics
+
+#### Define resources profile
 
 First, load `cavia.core` and prepare resources' information with `defprofile`
 macro.
@@ -95,7 +97,7 @@ downloading. Only gzip (`:gzip`) format is supported.
 Cavia downloads resources to `:download-to` directory. The default location is
 `./.cavia`. Thus maybe you should add `/.cavia` to your SCM ignore list.
 
-### Resource management
+#### Resource management
 
 Cavia provides some functions for managing resources.
 
@@ -124,7 +126,7 @@ the above functions quietly, use `without-print` macro.
   (cavia/get! prof))
 ```
 
-### Resource access
+#### Resource access
 
 You do not need to remember the downloaded resources' paths any more. `resource`
 returns the absolute path to the resource from the specified resource id. It
@@ -138,13 +140,13 @@ returns `nil` when the id is not defined.
 ;;=> nil
 ```
 
-## Integration with test frameworks
+### Integration with test frameworks
 
 Cavia is a library for management of test resources. It is good to use Cavia
 with test frameworks like clojure.test,
 [Midje](https://github.com/marick/Midje), etc.
 
-### with clojure.test
+#### with clojure.test
 
 ```clojure
 (ns foo.core-test
@@ -167,7 +169,7 @@ with test frameworks like clojure.test,
     (is (= (slurp (cavia/resource prof :resource1)) "resource1's content")))
 ```
 
-### with Midje
+#### with Midje
 
 ```clojure
 (ns foo.t-core
@@ -188,7 +190,7 @@ with test frameworks like clojure.test,
   )
 ```
 
-## Use as a simple downloader
+### Use as a simple downloader
 
 Cavia provides features of file downloading as independent functions.
 

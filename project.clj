@@ -1,5 +1,5 @@
 (defproject cavia "1.0.0-SNAPSHOT"
-  :description "Test resource manager for Clojure project"
+  :description "Remote resource management for Clojure projects"
   :url "https://github.com/totakke/cavia"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}

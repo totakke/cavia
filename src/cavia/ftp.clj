@@ -4,6 +4,19 @@
   (:import [org.apache.commons.net.ftp FTP FTPClient FTPSClient FTPReply]))
 
 (defn client
+  "Connects an FTP server specified by `url`, returning
+  `org.apache.commons.net.ftp.FTPClient` instance.
+
+  Options:
+
+      :auth        Username and password for FTP authentication.
+                   e.g. {:user \"user\", :password \"password\"}
+
+      :file-type   The file type to be transferred: `:binary` or `:ascii`.
+                   Default is `:binary`.
+
+      :local-mode  The data connection mode: `:active` or `:passive`. Default is
+                   `:passive`."
   ^FTPClient
   [url & [{:keys [auth file-type local-mode]
            :or {file-type :binary, local-mode :passive}}]]

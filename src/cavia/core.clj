@@ -9,7 +9,7 @@
             [cavia.internal :refer [delete-dir]])
   (:import java.net.MalformedURLException))
 
-(def skeleton-profile {:download-to ".cavia"})
+(def ^:no-doc skeleton-profile {:download-to ".cavia"})
 
 (defmacro defprofile
   "Defines a cavia profile.
@@ -45,8 +45,8 @@
 (def ^:private ^:dynamic *tacit-profile* nil)
 
 (defmacro with-profile
-  "The specified profile will be used in cavia processes when each profile will
-  not be provided.
+  "The specified `profile` will be used for cavia processes inside
+  `with-profile` when each profile is not provided.
 
   e.g.:
 
@@ -130,7 +130,7 @@
     (and (not (nil? f)) (.isFile (io/file f)))))
 
 (defmulti exist?
-  "Returns true if the specified resource exists on local."
+  "Returns `true` if the specified resource exists on local."
   meta-tag)
 
 (defmethod exist? ::Profile
@@ -204,7 +204,7 @@
     (and (exist-unverified? profile id) (= (hash-file f ha) hv))))
 
 (defmulti valid?
-  "Returns true if the resource's real hash is same as the defined hash."
+  "Returns `true` if the resource's real hash is same as the defined hash."
   meta-tag)
 
 (defmethod valid? ::Profile

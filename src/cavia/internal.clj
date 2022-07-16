@@ -1,4 +1,4 @@
-(ns cavia.internal
+(ns ^:no-doc cavia.internal
   (:require [clojure.java.io :as io])
   (:import java.net.URLDecoder))
 
