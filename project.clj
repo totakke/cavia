@@ -1,8 +1,8 @@
 (defproject cavia "0.7.0-SNAPSHOT"
   :description "Test resource manager for Clojure project"
   :url "https://github.com/totakke/cavia"
-  :license {:name "Eclipse Public License"
-            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :license {:name "The MIT License"
+            :url "https://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [clj-http "3.12.3"]
                  [com.cognitect.aws/api "0.8.561"]

@@ -211,6 +211,6 @@ downloaded file.
 
 ## License
 
-Copyright © 2014-2022 [Toshiki Takeuchi](https://totakke.net/)
+Copyright 2014 [Toshiki Takeuchi](https://totakke.net/)
 
-Distributed under the [Eclipse Public License version 1.0](LICENSE).
+Distributed under the [MIT License](LICENSE).
