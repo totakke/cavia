@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Changed
+
+- Change license to the MIT License.
+
 ## [0.6.2] - 2022-06-21
 
 ### Added
