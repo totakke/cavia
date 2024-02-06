@@ -1,18 +1,18 @@
 (defproject cavia "0.7.0-SNAPSHOT"
-  :description "Test resource manager for Clojure project"
+  :description "Remote resource management for Clojure projects"
   :url "https://github.com/totakke/cavia"
   :license {:name "The MIT License"
             :url "https://opensource.org/licenses/MIT"}
   :dependencies [[org.clojure/clojure "1.11.1"]
                  [clj-http "3.12.3"]
-                 [com.cognitect.aws/api "0.8.561"]
-                 [com.cognitect.aws/endpoints "1.1.12.230"]
-                 [com.cognitect.aws/s3 "822.2.1145.0"]
+                 [com.cognitect.aws/api "0.8.692"]
+                 [com.cognitect.aws/endpoints "1.1.12.626"]
+                 [com.cognitect.aws/s3 "848.2.1413.0"]
                  [com.jcraft/jsch "0.1.55"]
-                 [commons-net "3.8.0"]
+                 [commons-net "3.10.0"]
                  [digest "1.4.10"]
-                 [lambdaisland/uri "1.13.95"]
-                 [org.apache.commons/commons-compress "1.21"]
+                 [lambdaisland/uri "1.19.155"]
+                 [org.apache.commons/commons-compress "1.25.0"]
                  [progrock "0.1.2"]]
   :test-selectors {:default (complement :integration)
                    :integration :integration}
