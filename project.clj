@@ -19,4 +19,7 @@
   :profiles {:1.9 {:dependencies [[org.clojure/clojure "1.9.0"]]}
              :1.10 {:dependencies [[org.clojure/clojure "1.10.3"]]}
              :1.11 {:dependencies [[org.clojure/clojure "1.11.1"]]}}
+  :deploy-repositories [["snapshots" {:url "https://clojars.org/repo/"
+                                      :username [:env/clojars_username]
+                                      :password [:env/clojars_password]}]]
   :signing {:gpg-key "roimisia@gmail.com"})
