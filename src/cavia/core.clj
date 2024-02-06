@@ -57,11 +57,29 @@
   `(binding [*tacit-profile* ~profile]
      ~@body))
 
+(defmacro with-verbosity
+  "Controls verbosity of normal `:message` or `:download` progress or both. Take
+  care that `with-verbosity` cannot control error and warning messages.
+
+  For example, the following code suppresses normal messages but displays
+  download progress.
+
+      (with-verbosity {:message false
+                       :progress true}
+        (cavia/get!))"
+  [m & body]
+  `(binding [*verbosity* (merge *verbosity* ~m)]
+     ~@body))
+
 (defmacro without-print
-  "Restrains printing log, progress, and other messages. Take care that it does
-  not restrain error and warning messages."
+  {:deprecated "0.7.0"
+   :doc "DEPRECATED: use `cavia.core/with-verbosity` instead.
+
+  Restrains printing log, progress, and other messages. Take care that it does
+  not restrain error and warning messages."}
   [& body]
-  `(binding [*verbose* false]
+  `(binding [*verbosity* {:message false
+                          :download false}]
      ~@body))
 
 (defn- meta-tag
@@ -278,7 +296,7 @@
         dl-f (resource-download profile id)
         uv-f (resource-unverified profile id)
         {:keys [url protocol auth packed], :as r} (resource-info profile id)]
-    (when *verbose*
+    (when (:download *verbosity*)
       (println (format "Retrieving %s from %s" id url)))
     (case (or protocol (detect-protocol url))
       :http (dl/http-download! url dl-f :auth auth :resume true)
@@ -303,12 +321,12 @@
     (doseq [r resources]
       (let [id (:id r)]
         (cond
-          (valid? profile id) (when *verbose*
+          (valid? profile id) (when (:message *verbosity*)
                                 (println (str "Already downloaded: " id)))
           (valid-unverified? profile id) (do
                                            (.renameTo (io/file (resource-unverified profile id))
                                                       (io/file (resource profile id)))
-                                           (when *verbose*
+                                           (when (:message *verbosity*)
                                              (println (str "Verified " id))))
           :else (get-resource profile id))))))
 

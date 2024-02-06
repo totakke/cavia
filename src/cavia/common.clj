@@ -1,8 +1,8 @@
 (ns cavia.common)
 
-(def ^:dynamic *verbose*
-  "A boolean value representing verbosity."
-  true)
+(def ^:dynamic *verbosity*
+  {:message true
+   :download true})
 
 (def ^:dynamic *download-buffer-size*
   "A buffer size used in a downloading process. Its unit is byte."

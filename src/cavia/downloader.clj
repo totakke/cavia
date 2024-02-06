@@ -5,7 +5,7 @@
             [cognitect.aws.credentials :as credentials]
             [lambdaisland.uri :as uri]
             [progrock.core :as pr]
-            [cavia.common :refer [*download-buffer-size* *verbose*]]
+            [cavia.common :refer [*download-buffer-size* *verbosity*]]
             [cavia.ftp :as ftp]
             [cavia.internal :refer [str->int]]
             [cavia.sftp :as sftp]
@@ -20,7 +20,7 @@
   requires the content length."
   [^InputStream is ^OutputStream os ^long content-len resume]
   (let [data (byte-array *download-buffer-size*)
-        with-print (and *verbose* (pos? content-len))
+        with-print (and (:download *verbosity*) (pos? content-len))
         ^long resume (or resume 0)
         size (+ content-len resume)]
     (loop [len (.read is data)
