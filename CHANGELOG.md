@@ -5,6 +5,7 @@
 ### Changed
 
 - Change license to the MIT License.
+- Separate verbosity type.
 
 ## [0.6.2] - 2022-06-21
 
