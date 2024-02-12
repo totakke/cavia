@@ -19,6 +19,10 @@ be directly used in a project and source codes. Cavia downloads test resources
 from remotes, checks their hash before tests, and provides convenience
 functions to access the resources.
 
+## NOTICE
+
+The OSS license of Cavia was changed to the [MIT License](LICENSE) since v0.7.0.
+
 ## Installation
 
 Cavia is available as a Maven artifact from [Clojars](http://clojars.org/cavia).
@@ -26,13 +30,13 @@ Cavia is available as a Maven artifact from [Clojars](http://clojars.org/cavia).
 Clojure CLI/deps.edn:
 
 ```clojure
-cavia/cavia {:mvn/version "0.6.2"}
+cavia/cavia {:mvn/version "0.7.0"}
 ```
 
 Leiningen/Boot:
 
 ```clojure
-[cavia "0.6.2"]
+[cavia "0.7.0"]
 ```
 
 ## Basic usage
@@ -116,11 +120,13 @@ macro.
   (cavia/get!))
 ```
 
-`get!` and other functions output progress and logs' print to stdout. To call
-the above functions quietly, use `without-print` macro.
+`get!` and other functions output logs and download progress to stdout. To call
+the above functions quietly, use `with-verbosity` macro. For example, the
+following code suppresses normal messages but displays download progress.
 
 ```clojure
-(without-print
+(with-verbosity {:message false
+                 :progress true}
   (cavia/get! prof))
 ```
 

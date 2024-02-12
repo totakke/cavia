@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [0.7.0] - 2024-02-12
 
 ### Changed
 
@@ -207,7 +207,8 @@
 
 First release.
 
-[Unreleased]: https://github.com/totakke/cavia/compare/0.6.2...HEAD
+[Unreleased]: https://github.com/totakke/cavia/compare/0.7.0...HEAD
+[0.7.0]: https://github.com/totakke/cavia/compare/0.6.2...0.7.0
 [0.6.2]: https://github.com/totakke/cavia/compare/0.6.1...0.6.2
 [0.6.1]: https://github.com/totakke/cavia/compare/0.6.0...0.6.1
 [0.6.0]: https://github.com/totakke/cavia/compare/0.5.1...0.6.0
