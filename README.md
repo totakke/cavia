@@ -27,7 +27,13 @@ The OSS license of Cavia was changed to the [MIT License](LICENSE) since v0.7.0.
 
 Cavia is available as a Maven artifact from [Clojars](http://clojars.org/cavia).
 
-Clojure CLI/deps.edn:
+Clojure CLI/deps.edn (as Git):
+
+```clojure
+io.github.totakke/cavia {:git/tag "v0.7.0_1" :git/sha "9dd80e7"}
+```
+
+Clojure CLI/deps.edn (as Maven):
 
 ```clojure
 cavia/cavia {:mvn/version "0.7.0"}
