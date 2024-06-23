@@ -12,7 +12,7 @@
                  [commons-net "3.10.0"]
                  [digest "1.4.10"]
                  [lambdaisland/uri "1.19.155"]
-                 [org.apache.commons/commons-compress "1.25.0"]
+                 [org.apache.commons/commons-compress "1.26.2"]
                  [progrock "0.1.2"]]
   :test-selectors {:default (complement :integration)
                    :integration :integration}
