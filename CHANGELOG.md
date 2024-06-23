@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.7.1] - 2024-06-23
+
+### Changed
+
+- Bump up commons-compress to 1.26.2. [#8](https://github.com/totakke/cavia/pull/8)
+  - Because of CVE-2024-25710 and CVE-2024-26308.
+- Update clojure to 1.11.3.
+  - Because of CVE-2024-22871.
+
 ## [0.7.0] - 2024-02-12
 
 ### Changed
@@ -207,7 +216,8 @@
 
 First release.
 
-[Unreleased]: https://github.com/totakke/cavia/compare/0.7.0...HEAD
+[Unreleased]: https://github.com/totakke/cavia/compare/0.7.1...HEAD
+[0.7.1]: https://github.com/totakke/cavia/compare/0.7.0...0.7.1
 [0.7.0]: https://github.com/totakke/cavia/compare/0.6.2...0.7.0
 [0.6.2]: https://github.com/totakke/cavia/compare/0.6.1...0.6.2
 [0.6.1]: https://github.com/totakke/cavia/compare/0.6.0...0.6.1

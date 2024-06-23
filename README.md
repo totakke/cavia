@@ -36,13 +36,13 @@ io.github.totakke/cavia {:git/tag "v0.7.0_1" :git/sha "9dd80e7"}
 Clojure CLI/deps.edn (as Maven):
 
 ```clojure
-cavia/cavia {:mvn/version "0.7.0"}
+cavia/cavia {:mvn/version "0.7.1"}
 ```
 
 Leiningen/Boot:
 
 ```clojure
-[cavia "0.7.0"]
+[cavia "0.7.1"]
 ```
 
 ## Basic usage

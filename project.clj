@@ -1,4 +1,4 @@
-(defproject cavia "0.7.0"
+(defproject cavia "0.7.1"
   :description "Remote resource management for Clojure projects"
   :url "https://github.com/totakke/cavia"
   :license {:name "The MIT License"
