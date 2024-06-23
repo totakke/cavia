@@ -8,5 +8,5 @@
         digest/digest {:mvn/version "1.4.10"}
         lambdaisland/uri {:mvn/version "1.19.155"}
         org.apache.commons/commons-compress {:mvn/version "1.26.2"}
-        org.clojure/clojure {:mvn/version "1.11.1"}
+        org.clojure/clojure {:mvn/version "1.11.3"}
         progrock/progrock {:mvn/version "0.1.2"}}}
