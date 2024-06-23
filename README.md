@@ -30,7 +30,7 @@ Cavia is available as a Maven artifact from [Clojars](http://clojars.org/cavia).
 Clojure CLI/deps.edn (as Git):
 
 ```clojure
-io.github.totakke/cavia {:git/tag "v0.7.0_1" :git/sha "9dd80e7"}
+io.github.totakke/cavia {:git/tag "v0.7.1" :git/sha "7866700"}
 ```
 
 Clojure CLI/deps.edn (as Maven):
