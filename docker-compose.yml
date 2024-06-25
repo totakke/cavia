@@ -1,18 +1,14 @@
-version: "3"
-
 services:
   ftp:
-    image: stilliard/pure-ftpd
-    environment:
-    - PUBLICHOST=localhost
-    - FTP_USER_NAME=user
-    - FTP_USER_PASS=password
-    - FTP_USER_HOME=/home/user
+    image: crazymax/pure-ftpd:1.0.50
     ports:
-    - "2221:21"
+    - "2221:2100"
     - "30000-30009:30000-30009"
     volumes:
-    - ./docker/ftp:/home/user
+    - ./docker/ftp/data:/data
+    - ./docker/ftp/user:/home/user
+    environment:
+    - "AUTH_METHOD=puredb"
 
   minio:
     image: minio/minio
