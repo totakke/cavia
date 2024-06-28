@@ -25,8 +25,6 @@ The OSS license of Cavia was changed to the [MIT License](LICENSE) since v0.7.0.
 
 ## Installation
 
-Cavia is available as a Maven artifact from [Clojars](http://clojars.org/cavia).
-
 Clojure CLI/deps.edn (as Git):
 
 ```clojure
@@ -219,6 +217,18 @@ downloaded file.
                  "path/to/foobar.txt"
                  {:access-key-id "accesskey", :secret-access-key "secretkey"}
                  :resume true)
+```
+
+## Development
+
+### Integration test
+
+To run integration tests testing FTP and S3 protocols, launch mock servers with
+Docker Compose first.
+
+```sh
+docker compose up -d
+lein test :integration
 ```
 
 ## License
