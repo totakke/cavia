@@ -292,12 +292,16 @@
 
 (defn- get-resource
   [profile id]
-  (let [f    (resource profile id)
+  (let [download-to (io/file (:download-to profile))
+        f    (resource profile id)
         dl-f (resource-download profile id)
         uv-f (resource-unverified profile id)
         {:keys [url protocol auth packed], :as r} (resource-info profile id)]
     (when (:download *verbosity*)
       (println (format "Retrieving %s from %s" id url)))
+    (when-not (.isDirectory download-to)
+      (io/make-parents download-to)
+      (.mkdir download-to))
     (case (or protocol (detect-protocol url))
       :http (dl/http-download! url dl-f :auth auth :resume true)
       :ftp (dl/ftp-download! url dl-f :auth auth :resume true)
@@ -314,30 +318,33 @@
         (print-hash-alert id hv act-hash)))))
 
 (defn- get!*
-  [profile]
-  (let [{:keys [resources download-to]} profile]
-    (when-not (.isDirectory (io/file download-to))
-      (.mkdir (io/file download-to)))
-    (doseq [r resources]
-      (let [id (:id r)]
-        (cond
-          (valid? profile id) (when (:message *verbosity*)
-                                (println (str "Already downloaded: " id)))
-          (valid-unverified? profile id) (do
-                                           (.renameTo (io/file (resource-unverified profile id))
-                                                      (io/file (resource profile id)))
-                                           (when (:message *verbosity*)
-                                             (println (str "Verified " id))))
-          :else (get-resource profile id))))))
+  ([profile]
+   (doseq [{:keys [id]} (:resources profile)]
+     (get!* profile id)))
+  ([profile id]
+   (cond
+     (valid? profile id)
+     (when (:message *verbosity*)
+       (println (str "Already downloaded: " id)))
+
+     (valid-unverified? profile id)
+     (do
+       (.renameTo (io/file (resource-unverified profile id))
+                  (io/file (resource profile id)))
+       (when (:message *verbosity*)
+         (println (str "Verified " id))))
+
+     :else
+     (get-resource profile id))))
 
 (defmulti get!
   "Downloads missing resources to the local directory."
   meta-tag)
 
 (defmethod get! ::Profile
-  [profile]
-  (get!* profile))
+  [& args]
+  (apply get!* args))
 
 (defmethod get! :default
-  []
-  (get!* *tacit-profile*))
+  [& args]
+  (apply (partial get!* *tacit-profile*) args))
