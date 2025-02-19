@@ -1,6 +1,6 @@
 (ns cavia.sftp
-  (:require [lambdaisland.uri :as uri]
-            [cavia.internal :refer [str->int parse-auth]])
+  (:require [cavia.internal :refer [str->int parse-auth]]
+            [lambdaisland.uri :as uri])
   (:import [com.jcraft.jsch ChannelSftp JSch Session]))
 
 (defn session

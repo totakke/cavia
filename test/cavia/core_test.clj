@@ -1,8 +1,8 @@
 (ns cavia.core-test
-  (:require [clojure.test :refer :all]
-            [clojure.java.io :as io]
+  (:require [cavia.core :as cavia :refer [defprofile with-profile]]
             [cavia.test-util :refer :all]
-            [cavia.core :as cavia :refer [defprofile with-profile]]))
+            [clojure.java.io :as io]
+            [clojure.test :refer :all]))
 
 (defprofile test-prof
   {:resources [{:id :test-resource

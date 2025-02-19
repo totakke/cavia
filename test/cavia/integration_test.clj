@@ -1,7 +1,7 @@
 (ns cavia.integration-test
-  (:require [clojure.test :refer [deftest is use-fixtures]]
+  (:require [cavia.core :as cavia :refer [defprofile with-profile]]
             [cavia.test-util :refer [with-out-null]]
-            [cavia.core :as cavia :refer [defprofile with-profile]]))
+            [clojure.test :refer [deftest is use-fixtures]]))
 
 (defprofile test-prof
   {:resources [{:id :test-resource-ftp

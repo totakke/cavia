@@ -1,15 +1,15 @@
 (ns cavia.downloader
-  (:require [clojure.java.io :as io]
-            [clj-http.client :as client]
-            [cognitect.aws.client.api :as aws]
-            [cognitect.aws.credentials :as credentials]
-            [lambdaisland.uri :as uri]
-            [progrock.core :as pr]
-            [cavia.common :refer [*download-buffer-size* *verbosity*]]
+  (:require [cavia.common :refer [*download-buffer-size* *verbosity*]]
             [cavia.ftp :as ftp]
             [cavia.internal :refer [str->int]]
             [cavia.sftp :as sftp]
-            [cavia.util :as util])
+            [cavia.util :as util]
+            [clj-http.client :as client]
+            [clojure.java.io :as io]
+            [cognitect.aws.client.api :as aws]
+            [cognitect.aws.credentials :as credentials]
+            [lambdaisland.uri :as uri]
+            [progrock.core :as pr])
   (:import [java.io InputStream OutputStream IOException]
            java.net.MalformedURLException
            [com.jcraft.jsch ChannelSftp$LsEntry]

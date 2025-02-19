@@ -1,6 +1,6 @@
 (ns cavia.decompressor
-  (:require [clojure.java.io :as io]
-            [cavia.common :refer :all])
+  (:require [cavia.common :refer :all]
+            [clojure.java.io :as io])
   (:import [java.io FileInputStream FileOutputStream]
            org.apache.commons.compress.compressors.CompressorStreamFactory))
 

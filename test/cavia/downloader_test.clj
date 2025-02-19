@@ -1,9 +1,9 @@
 (ns cavia.downloader-test
-  (:require [clojure.test :refer :all]
-            [clojure.java.io :as io]
-            [digest]
+  (:require [cavia.downloader :as dl]
             [cavia.test-util :refer :all]
-            [cavia.downloader :as dl])
+            [clojure.java.io :as io]
+            [clojure.test :refer :all]
+            [digest])
   (:import java.net.MalformedURLException))
 
 ;;;

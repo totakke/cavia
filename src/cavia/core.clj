@@ -1,12 +1,12 @@
 (ns cavia.core
   (:refer-clojure :exclude [get])
-  (:require [clojure.java.io :as io]
-            [digest]
-            [lambdaisland.uri :as uri]
-            [cavia.common :refer :all]
-            [cavia.downloader :as dl]
+  (:require [cavia.common :refer :all]
             [cavia.decompressor :as dc]
-            [cavia.internal :refer [delete-dir]])
+            [cavia.downloader :as dl]
+            [cavia.internal :refer [delete-dir]]
+            [clojure.java.io :as io]
+            [digest]
+            [lambdaisland.uri :as uri])
   (:import java.net.MalformedURLException))
 
 (def skeleton-profile {:download-to ".cavia"})

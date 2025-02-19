@@ -1,7 +1,7 @@
 (ns cavia.internal-test
-  (:require [clojure.test :refer :all]
-            [lambdaisland.uri :as uri]
-            [cavia.internal :as i]))
+  (:require [cavia.internal :as i]
+            [clojure.test :refer :all]
+            [lambdaisland.uri :as uri]))
 
 (deftest parse-auth-test
   (are [u a e] (= (#'i/parse-auth (uri/uri u) a) e)
