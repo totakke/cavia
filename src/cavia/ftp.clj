@@ -1,7 +1,8 @@
 (ns cavia.ftp
   (:require [cavia.internal :refer [str->int parse-auth]]
             [lambdaisland.uri :as uri])
-  (:import [org.apache.commons.net.ftp FTP FTPClient FTPSClient FTPReply]))
+  (:import java.time.Duration
+           [org.apache.commons.net.ftp FTP FTPClient FTPSClient FTPReply]))
 
 (defn client
   ^FTPClient
@@ -24,10 +25,10 @@
       (.setFileType (case file-type
                       :binary FTP/BINARY_FILE_TYPE
                       :ascii FTP/ASCII_FILE_TYPE))
-      (.setControlKeepAliveTimeout 300)
-      (.setControlKeepAliveReplyTimeout 1000)
+      (.setControlKeepAliveTimeout (Duration/ofMillis 300))
+      (.setControlKeepAliveReplyTimeout (Duration/ofSeconds 1))
       (.setSoTimeout 30000)
-      (.setDataTimeout 30000))
+      (.setDataTimeout (Duration/ofSeconds 30)))
     (case local-mode
       :active (.enterLocalActiveMode client)
       :passive (.enterLocalPassiveMode client))

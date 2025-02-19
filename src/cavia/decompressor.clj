@@ -10,7 +10,7 @@
 
 (defn decompress
   [^String in-f ^String out-f type]
-  (if-let [compressor (get compressor-map type)]
+  (if-let [^String compressor (get compressor-map type)]
     (with-open [in (.createCompressorInputStream (CompressorStreamFactory.)
                                                  compressor
                                                  (FileInputStream. in-f))
