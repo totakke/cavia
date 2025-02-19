@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Add an arity for getting a single resource. [ca2f078](https://github.com/totakke/cavia/commit/ca2f078)
+
+### Changed
+
+- Update clojure to 1.12.0. [457963a](https://github.com/totakke/cavia/commit/457963a)
+- Update dependencies except for aws-api. [0042956](https://github.com/totakke/cavia/commit/0042956)
+
+### Fixed
+
+- Fix deprecated calls. [4d0faae](https://github.com/totakke/cavia/commit/4d0faae)
+
 ## [0.7.1] - 2024-06-23
 
 ### Changed
