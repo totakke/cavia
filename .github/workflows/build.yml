@@ -28,7 +28,7 @@ jobs:
           restore-keys: cljdeps-
 
       - name: Run tests
-        run: lein with-profile +1.9:+1.10:+1.11 test
+        run: lein with-profile +1.9:+1.10:+1.11:+1.12 test
 
   get-version:
     runs-on: ubuntu-latest

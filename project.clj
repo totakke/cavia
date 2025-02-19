@@ -3,7 +3,7 @@
   :url "https://github.com/totakke/cavia"
   :license {:name "The MIT License"
             :url "https://opensource.org/licenses/MIT"}
-  :dependencies [[org.clojure/clojure "1.11.3"]
+  :dependencies [[org.clojure/clojure "1.12.0"]
                  [clj-http "3.12.3"]
                  [com.cognitect.aws/api "0.8.692"]
                  [com.cognitect.aws/endpoints "1.1.12.626"]
@@ -18,7 +18,8 @@
                    :integration :integration}
   :profiles {:1.9 {:dependencies [[org.clojure/clojure "1.9.0"]]}
              :1.10 {:dependencies [[org.clojure/clojure "1.10.3"]]}
-             :1.11 {:dependencies [[org.clojure/clojure "1.11.3"]]}}
+             :1.11 {:dependencies [[org.clojure/clojure "1.11.3"]]}
+             :1.12 {:dependencies [[org.clojure/clojure "1.12.0"]]}}
   :deploy-repositories [["snapshots" {:url "https://clojars.org/repo/"
                                       :username [:env/clojars_username]
                                       :password [:env/clojars_password]}]]
