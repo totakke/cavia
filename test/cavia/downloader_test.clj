@@ -22,7 +22,7 @@
 ;;; defs
 ;;;
 
-(def http-test-url "https://s3.amazonaws.com/cavia/test.png")
+(def http-test-url "http://localhost:8080/test.png")
 (def http-test-hash "07dba3bd9f227f58134d339b1609e0a913abe0de")
 (def http-test-local (str temp-dir "/http-test-resource"))
 
@@ -44,7 +44,7 @@
 ;;; Tests
 ;;;
 
-(deftest http-download!-test
+(deftest ^:integration http-download!-test
   (testing "returns nil when finishing successfully "
     (is (nil? (dl/http-download! http-test-url http-test-local))))
   (testing "check the resource's hash"

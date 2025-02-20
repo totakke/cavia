@@ -1,4 +1,11 @@
 services:
+  http:
+    image: nginx:1.27.4
+    ports:
+    - "8080:80"
+    volumes:
+    - ./docker/http:/usr/share/nginx/html
+
   ftp:
     image: crazymax/pure-ftpd:1.0.50
     ports:
