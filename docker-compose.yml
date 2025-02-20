@@ -11,21 +11,24 @@ services:
     - "AUTH_METHOD=puredb"
 
   minio:
-    image: minio/minio
+    image: minio/minio:RELEASE.2025-02-18T16-25-55Z
     ports:
     - "9000:9000"
     - "9001:9001"
     command: server /data --console-address ":9001"
 
   minio-preparation:
-    image: minio/mc
+    image: minio/mc:RELEASE.2025-02-15T10-36-16Z
     depends_on:
     - minio
     volumes:
     - ./docker/minio:/data
     entrypoint: >
       /bin/sh -c "
-      until (/usr/bin/mc config host add myminio http://minio:9000 minioadmin minioadmin) do echo '...waiting...' && sleep 1; done;
+      until (/usr/bin/mc config host add myminio http://minio:9000 minioadmin minioadmin)
+      do
+        echo '...waiting...' && sleep 1;
+      done;
       /usr/bin/mc mb myminio/cavia;
       /usr/bin/mc cp /data/test.png myminio/cavia;
       exit 0;"
