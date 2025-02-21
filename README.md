@@ -28,19 +28,19 @@ The OSS license of Cavia was changed to the [MIT License](LICENSE) since v0.7.0.
 Clojure CLI/deps.edn (as Git):
 
 ```clojure
-io.github.totakke/cavia {:git/tag "v0.7.1" :git/sha "7866700"}
+io.github.totakke/cavia {:git/tag "v0.7.2" :git/sha "0788cb4"}
 ```
 
 Clojure CLI/deps.edn (as Maven):
 
 ```clojure
-cavia/cavia {:mvn/version "0.7.1"}
+cavia/cavia {:mvn/version "0.7.2"}
 ```
 
 Leiningen/Boot:
 
 ```clojure
-[cavia "0.7.1"]
+[cavia "0.7.2"]
 ```
 
 ## Basic usage
