@@ -4,8 +4,8 @@
             [cavia.decompressor :as dc]
             [cavia.downloader :as dl]
             [cavia.internal :refer [delete-dir]]
+            [clj-commons.digest :as digest]
             [clojure.java.io :as io]
-            [digest]
             [lambdaisland.uri :as uri])
   (:import java.net.MalformedURLException))
 
