@@ -35,7 +35,7 @@
                       :auth {:access-key-id \"accesskey\", :secret-access-key \"secretkey\"}}
                      {:id :resource5
                       :url \"http://example.com/resource5.gz\"
-                      :sha1 \"456789abcdef01234567890abcdef0123456789a\"
+                      :sha512 \"456789abcdef01234567890abcdef0123456789abcdef01234567890abcdef01234567890abcdebcdef01234567890abcdef01234567890abcdebcdef0123456\"
                       :packed :gzip}]
         :download-to \".cavia\"})"
   [name profile]
@@ -166,11 +166,12 @@
   priority will be used."
   {:md5 0
    :sha1 1
-   :sha256 2})
+   :sha256 2
+   :sha512 3})
 
 (defn- enabled-hash
   [r]
-  (->> (select-keys r [:md5 :sha1 :sha256])
+  (->> (select-keys r [:md5 :sha1 :sha256 :sha512])
        (sort-by #((first %) hash-algo-order) >)
        first))
 
@@ -181,6 +182,7 @@
        :md5 digest/md5
        :sha1 digest/sha1
        :sha256 digest/sha-256
+       :sha512 digest/sha-512
        (throw (IllegalArgumentException. (str "Invalid hash algorithm: " algo))))
      (io/file f))))
 

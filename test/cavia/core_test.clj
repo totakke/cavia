@@ -11,12 +11,15 @@
                {:id :test-resource2
                 :url "http://localhost:8080/test.png"
                 :sha1 "unverifiedsha1"}
-               {:id :test-resource3
+               {:id :test-resource-md5
                 :url "http://localhost:8080/test.png"
                 :md5 "0656b409231ee9bd8c5c9272647c69a1"}
-               {:id :test-resource4
+               {:id :test-resource-sha256
                 :url "http://localhost:8080/test.png"
                 :sha256 "55902cd4056e2bd57ced9296c826e4df42f07457c96ce72afe8652d0d6dd89b3"}
+               {:id :test-resource-sha512
+                :url "http://localhost:8080/test.png"
+                :sha512 "71122b126cf93561275d711d543bd09db82f68637a603fec49e5e0a1312a1e3749580650d8adbd8989affe036a052019d7602c53f2456f117c1960c35b091ccb"}
                {:id :test-resource-gzip
                 :url "http://localhost:8080/test.png.gz"
                 :sha1 "07dba3bd9f227f58134d339b1609e0a913abe0de"
@@ -75,8 +78,9 @@
   (testing "returns true if the file's hash is valid"
     (are [k] (true? (cavia/valid? k))
       :test-resource
-      :test-resource3
-      :test-resource4
+      :test-resource-md5
+      :test-resource-sha256
+      :test-resource-sha512
       :test-resource-ftp
       :test-resource-s3))
   (testing "returns false if the file's hash is invalid"
