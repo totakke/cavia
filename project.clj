@@ -7,7 +7,7 @@
                  [com.cognitect.aws/api "0.8.692"]
                  [com.cognitect.aws/endpoints "871.2.30.11"]
                  [com.cognitect.aws/s3 "871.2.30.11"]
-                 [com.jcraft/jsch "0.1.55"]
+                 [com.github.mwiede/jsch "0.2.24"]
                  [commons-net "3.11.1"]
                  [lambdaisland/uri "1.19.155"]
                  [org.apache.commons/commons-compress "1.27.1"]

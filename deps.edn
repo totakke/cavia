@@ -3,7 +3,7 @@
         com.cognitect.aws/api {:mvn/version "0.8.692"}
         com.cognitect.aws/endpoints {:mvn/version "871.2.30.11"}
         com.cognitect.aws/s3 {:mvn/version "871.2.30.11"}
-        com.jcraft/jsch {:mvn/version "0.1.55"}
+        com.github.mwiede/jsch {:mvn/version "0.2.24"}
         commons-net/commons-net {:mvn/version "3.11.1"}
         lambdaisland/uri {:mvn/version "1.19.155"}
         org.apache.commons/commons-compress {:mvn/version "1.27.1"}
