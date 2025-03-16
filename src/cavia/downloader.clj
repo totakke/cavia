@@ -4,7 +4,7 @@
             [cavia.internal :refer [str->int]]
             [cavia.sftp :as sftp]
             [cavia.util :as util]
-            [clj-http.client :as client]
+            [clj-http.lite.client :as client]
             [clojure.java.io :as io]
             [cognitect.aws.client.api :as aws]
             [cognitect.aws.credentials :as credentials]
@@ -57,7 +57,7 @@
                         :oauth2 {:oauth-token (:token auth)}
                         nil)
                       (when resume
-                        {:headers {:range (str "bytes=" resume "-")}}))
+                        {:headers {"range" (str "bytes=" resume "-")}}))
         response (client/get url option)
         content-len (if-let [content-len (get-in response [:headers "content-length"])]
                       (str->int content-len) -1)

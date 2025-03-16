@@ -3,14 +3,14 @@
   :url "https://github.com/totakke/cavia"
   :license {:name "The MIT License"
             :url "https://opensource.org/licenses/MIT"}
-  :dependencies [[clj-http "3.13.0"]
-                 [com.cognitect.aws/api "0.8.692"]
+  :dependencies [[com.cognitect.aws/api "0.8.692"]
                  [com.cognitect.aws/endpoints "871.2.30.11"]
                  [com.cognitect.aws/s3 "871.2.30.11"]
                  [com.github.mwiede/jsch "0.2.24"]
                  [commons-net "3.11.1"]
                  [lambdaisland/uri "1.19.155"]
                  [org.apache.commons/commons-compress "1.27.1"]
+                 [org.clj-commons/clj-http-lite "1.0.13"]
                  [org.clj-commons/digest "1.4.100"]
                  [org.clojure/clojure "1.12.0"]
                  [progrock "1.0.0"]]
