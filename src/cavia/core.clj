@@ -65,7 +65,7 @@
   download progress.
 
       (with-verbosity {:message false
-                       :progress true}
+                       :download true}
         (cavia/get!))"
   [m & body]
   `(binding [*verbosity* (merge *verbosity* ~m)]

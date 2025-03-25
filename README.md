@@ -130,7 +130,7 @@ following code suppresses normal messages but displays download progress.
 
 ```clojure
 (with-verbosity {:message false
-                 :progress true}
+                 :download true}
   (cavia/get! prof))
 ```
 
