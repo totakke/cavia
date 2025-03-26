@@ -1,5 +1,7 @@
 (ns cavia.ftp
   (:require [cavia.internal :refer [str->int parse-auth]]
+            [cavia.specs :as specs]
+            [clojure.spec.alpha :as s]
             [lambdaisland.uri :as uri])
   (:import java.time.Duration
            [org.apache.commons.net.ftp FTP FTPClient FTPSClient FTPReply]))
@@ -33,3 +35,10 @@
       :active (.enterLocalActiveMode client)
       :passive (.enterLocalPassiveMode client))
     client))
+
+(s/fdef client
+  :args (s/cat :url ::specs/url
+               :opts (s/keys :opt-un [:cavia.specs.ftp/auth
+                                      :cavia.specs.ftp/file-type
+                                      :cavia.specs.ftp/local-mode]))
+  :ret #(instance? FTPClient %))

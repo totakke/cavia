@@ -3,14 +3,16 @@
             [cavia.ftp :as ftp]
             [cavia.internal :refer [str->int]]
             [cavia.sftp :as sftp]
+            [cavia.specs :as specs]
             [cavia.util :as util]
             [clj-http.lite.client :as client]
             [clojure.java.io :as io]
+            [clojure.spec.alpha :as s]
             [cognitect.aws.client.api :as aws]
             [cognitect.aws.credentials :as credentials]
             [lambdaisland.uri :as uri]
             [progrock.core :as pr])
-  (:import [java.io InputStream OutputStream IOException]
+  (:import [java.io File InputStream OutputStream IOException]
            java.net.MalformedURLException
            [com.jcraft.jsch ChannelSftp$LsEntry]
            [org.apache.commons.net.ftp FTPClient FTPReply]))
@@ -58,12 +60,19 @@
                         nil)
                       (when resume
                         {:headers {"range" (str "bytes=" resume "-")}}))
-        response (client/get url option)
+        response (client/get (str url) option)
         content-len (if-let [content-len (get-in response [:headers "content-length"])]
                       (str->int content-len) -1)
         is (:body response)]
     (with-open [os (io/output-stream file :append (boolean resume))]
       (download! is os content-len resume))))
+
+(s/fdef http-download!
+  :args (s/cat :url ::specs/url
+               :f (s/or :string string?
+                        :file #(instance? File %))
+               :opts (s/keys* :opt-un [:cavia.specs.downloader/auth
+                                       :cavia.specs.downloader/resume])))
 
 (defn- ftp-content-len
   [^FTPClient ftp-client path]
@@ -114,6 +123,13 @@
         ;;       ignores the timeout.
         nil))))
 
+(s/fdef ftp-download!
+  :args (s/cat :url ::specs/url
+               :f (s/or :string string?
+                        :file #(instance? File %))
+               :opts (s/keys* :opt-un [:cavia.specs.downloader/auth
+                                       :cavia.specs.downloader/resume])))
+
 (defn sftp-download!
   [url f auth]
   (util/with-connection [session (sftp/session url {:auth auth})
@@ -124,6 +140,12 @@
       (with-open [is (.get channel (:path u))
                   os (io/output-stream f)]
         (download! is os content-len 0)))))
+
+(s/fdef sftp-download!
+  :args (s/cat :url ::specs/url
+               :f (s/or :string string?
+                        :file #(instance? File %))
+               :auth ::specs/auth))
 
 (defn- s3-client
   [url auth]
@@ -179,3 +201,10 @@
                                               range (assoc :Range range))}))
                 os (io/output-stream file :append (boolean resume))]
       (download! is os content-len resume))))
+
+(s/fdef s3-download!
+  :args (s/cat :url ::specs/url
+               :f (s/or :string string?
+                        :file #(instance? File %))
+               :auth ::specs/auth
+               :opts (s/keys* :opt-un [:cavia.specs.downloader/resume])))

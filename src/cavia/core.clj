@@ -4,12 +4,23 @@
             [cavia.decompressor :as dc]
             [cavia.downloader :as dl]
             [cavia.internal :refer [delete-dir]]
+            [cavia.specs :as specs]
             [clj-commons.digest :as digest]
             [clojure.java.io :as io]
+            [clojure.spec.alpha :as s]
             [lambdaisland.uri :as uri])
   (:import java.net.MalformedURLException))
 
 (def skeleton-profile {:download-to ".cavia"})
+
+(defn parse-profile
+  [m]
+  (-> (merge skeleton-profile m)
+      (update :resources (fn [xs]
+                           (mapv #(-> %
+                                      (update :id name)
+                                      (update :url uri/uri))
+                                 xs)))))
 
 (defmacro defprofile
   "Defines a cavia profile.
@@ -39,8 +50,12 @@
                       :packed :gzip}]
         :download-to \".cavia\"})"
   [name profile]
-  `(let [profile# (merge skeleton-profile ~profile)]
+  `(let [profile# (s/assert ::specs/profile (parse-profile ~profile))]
      (def ~name (with-meta profile# {:tag ::Profile}))))
+
+(s/fdef defprofile
+  :args (s/cat :name simple-symbol?
+               :profile any?))
 
 (def ^:private ^:dynamic *tacit-profile* nil)
 
@@ -57,6 +72,10 @@
   `(binding [*tacit-profile* ~profile]
      ~@body))
 
+(s/fdef with-profile
+  :args (s/cat :profile simple-symbol?
+               :body (s/* any?)))
+
 (defmacro with-verbosity
   "Controls verbosity of normal `:message` or `:download` progress or both. Take
   care that `with-verbosity` cannot control error and warning messages.
@@ -70,6 +89,10 @@
   [m & body]
   `(binding [*verbosity* (merge *verbosity* ~m)]
      ~@body))
+
+(s/fdef with-verbosity
+  :args (s/cat :m map?
+               :body (s/* any?)))
 
 (defmacro without-print
   {:deprecated "0.7.0"
@@ -92,10 +115,10 @@
   [profile id]
   (let [{:keys [resources download-to]} profile]
     (when-let [id* (->> resources
-                        (filter #(= (:id %) id))
+                        (filter #(= (:id %) (name id)))
                         (first)
                         (:id))]
-      (.getAbsolutePath (io/file (str download-to "/" (name id*)))))))
+      (.getAbsolutePath (io/file (str download-to "/" id*))))))
 
 (defn- resource-download [profile id]
   (format "%s.download" (resource* profile id)))
@@ -117,12 +140,17 @@
   [id]
   (resource* *tacit-profile* id))
 
+(s/fdef resource
+  :args (s/cat :profile (s/? ::specs/profile)
+               :id ::specs/id)
+  :ret (s/nilable string?))
+
 ;; ## Resource info
 
 (defn- resource-info*
   [profile id]
   (->> (:resources profile)
-       (filter #(= (:id %) id))
+       (filter #(= (:id %) (name id)))
        (first)))
 
 (defmulti resource-info meta-tag)
@@ -134,6 +162,11 @@
 (defmethod resource-info :default
   [id]
   (resource-info* *tacit-profile* id))
+
+(s/fdef resource-info
+  :args (s/cat :profile (s/? ::specs/profile)
+               :id ::specs/id)
+  :ret (s/nilable ::specs/profile-resource))
 
 ;; ## Existence
 
@@ -158,6 +191,11 @@
 (defmethod exist? :default
   [id]
   (exist?* *tacit-profile* id))
+
+(s/fdef exist?
+  :args (s/cat :profile (s/? ::specs/profile)
+               :id ::specs/id)
+  :ret boolean?)
 
 ;; ## Validation
 
@@ -188,7 +226,8 @@
 
 (defn- print-hash-alert
   ([profile id]
-   (let [[ha hv] (->> (:resources profile)
+   (let [id (name id)
+         [ha hv] (->> (:resources profile)
                       (filter #(= (:id %) id))
                       (first)
                       (enabled-hash))
@@ -207,7 +246,8 @@
 
 (defn- valid?*
   [profile id]
-  (let [[ha hv] (->> (:resources profile)
+  (let [id (name id)
+        [ha hv] (->> (:resources profile)
                      (filter #(= (:id %) id))
                      (first)
                      (enabled-hash))
@@ -216,7 +256,8 @@
 
 (defn- valid-unverified?
   [profile id]
-  (let [[ha hv] (->> (:resources profile)
+  (let [id (name id)
+        [ha hv] (->> (:resources profile)
                      (filter #(= (:id %) id))
                      (first)
                      (enabled-hash))
@@ -234,6 +275,11 @@
 (defmethod valid? :default
   [id]
   (valid?* *tacit-profile* id))
+
+(s/fdef valid?
+  :args (s/cat :profile (s/? ::specs/profile)
+               :id ::specs/id)
+  :ret boolean?)
 
 ;; ## Verification
 
@@ -260,6 +306,11 @@
   [& args]
   (apply (partial verify* *tacit-profile*) args))
 
+(s/fdef verify
+  :args (s/cat :profile (s/? ::specs/profile)
+               :id (s/? ::specs/id))
+  :ret boolean?)
+
 ;; ## Clean
 
 (defn- clean!*
@@ -281,6 +332,10 @@
 (defmethod clean! :default
   [& args]
   (apply (partial clean!* *tacit-profile*) args))
+
+(s/fdef clean!
+  :args (s/cat :profile (s/? ::specs/profile)
+               :id (s/? ::specs/id)))
 
 ;; ## Download
 
@@ -324,20 +379,21 @@
    (doseq [{:keys [id]} (:resources profile)]
      (get!* profile id)))
   ([profile id]
-   (cond
-     (valid? profile id)
-     (when (:message *verbosity*)
-       (println (str "Already downloaded: " id)))
-
-     (valid-unverified? profile id)
-     (do
-       (.renameTo (io/file (resource-unverified profile id))
-                  (io/file (resource profile id)))
+   (let [id (name id)]
+     (cond
+       (valid? profile id)
        (when (:message *verbosity*)
-         (println (str "Verified " id))))
+         (println (str "Already downloaded: " id)))
 
-     :else
-     (get-resource profile id))))
+       (valid-unverified? profile id)
+       (do
+         (.renameTo (io/file (resource-unverified profile id))
+                    (io/file (resource profile id)))
+         (when (:message *verbosity*)
+           (println (str "Verified " id))))
+
+       :else
+       (get-resource profile id)))))
 
 (defmulti get!
   "Downloads missing resources to the local directory."
@@ -350,3 +406,8 @@
 (defmethod get! :default
   [& args]
   (apply (partial get!* *tacit-profile*) args))
+
+(s/fdef get!
+  :args (s/cat :profile (s/? ::specs/profile)
+               :id (s/? ::specs/id))
+  :ret (s/nilable boolean?))
