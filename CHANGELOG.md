@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Support SHA512 hash algorithm (`:sha512`). [9d1d141](https://github.com/totakke/cavia/commit/9d1d141)
+- Add specs. [#9](https://github.com/totakke/cavia/pull/9)
+
+### Changed
+
+- Migrate digest to clj-commons/digest. [3dc4fef](https://github.com/totakke/cavia/commit/3dc4fef)
+- Migrate jcraft/jsch to mwiede/jsch. [ff3dbba](https://github.com/totakke/cavia/commit/ff3dbba)
+- Use clj-http-lite instead of clj-http. [6cc4005](https://github.com/totakke/cavia/commit/6cc4005)
+
+### Fixed
+
+- Fix a document of verbosity. [52873b1](https://github.com/totakke/cavia/commit/52873b1)
+
 ## [0.7.2] - 2025-02-21
 
 ### Added
