@@ -3,8 +3,11 @@
             [cavia.test-util :refer :all]
             [clj-commons.digest :as digest]
             [clojure.java.io :as io]
+            [clojure.spec.test.alpha :as stest]
             [clojure.test :refer :all])
   (:import java.net.MalformedURLException))
+
+(stest/instrument)
 
 ;;;
 ;;; Setup and teardown

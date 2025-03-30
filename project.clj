@@ -14,6 +14,7 @@
                  [org.clj-commons/digest "1.4.100"]
                  [org.clojure/clojure "1.12.0"]
                  [progrock "1.0.0"]]
+  :jvm-opts ["-Dclojure.spec.check-asserts=true"]
   :test-selectors {:default (complement :integration)
                    :integration :integration}
   :profiles {:1.9 {:dependencies [[org.clojure/clojure "1.9.0"]]}

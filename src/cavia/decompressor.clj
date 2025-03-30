@@ -1,6 +1,8 @@
 (ns cavia.decompressor
   (:require [cavia.common :refer :all]
-            [clojure.java.io :as io])
+            [cavia.specs :as specs]
+            [clojure.java.io :as io]
+            [clojure.spec.alpha :as s])
   (:import [java.io FileInputStream FileOutputStream]
            org.apache.commons.compress.compressors.CompressorStreamFactory))
 
@@ -17,3 +19,8 @@
                 out (FileOutputStream. out-f)]
       (io/copy in out :buffer-size *decompress-buffer-size*))
     (throw (IllegalArgumentException. (str "Unsupported compressor type: " type)))))
+
+(s/fdef decompress
+  :args (s/cat :in-f string?
+               :out-f string?
+               :type ::specs/compressor))

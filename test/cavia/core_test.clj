@@ -2,7 +2,10 @@
   (:require [cavia.core :as cavia :refer [defprofile with-profile]]
             [cavia.test-util :refer :all]
             [clojure.java.io :as io]
+            [clojure.spec.test.alpha :as stest]
             [clojure.test :refer :all]))
+
+(stest/instrument)
 
 (defprofile test-prof
   {:resources [{:id :test-resource
@@ -10,7 +13,7 @@
                 :sha1 "07dba3bd9f227f58134d339b1609e0a913abe0de"}
                {:id :test-resource2
                 :url "http://localhost:8080/test.png"
-                :sha1 "unverifiedsha1"}
+                :sha1 "0000000000000000000000000000000000000000"}
                {:id :test-resource-md5
                 :url "http://localhost:8080/test.png"
                 :md5 "0656b409231ee9bd8c5c9272647c69a1"}
