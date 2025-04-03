@@ -3,9 +3,9 @@
   :url "https://github.com/totakke/cavia"
   :license {:name "The MIT License"
             :url "https://opensource.org/licenses/MIT"}
-  :dependencies [[com.cognitect.aws/api "0.8.692"]
-                 [com.cognitect.aws/endpoints "871.2.30.11"]
-                 [com.cognitect.aws/s3 "871.2.30.11"]
+  :dependencies [[com.cognitect.aws/api "0.8.735"]
+                 [com.cognitect.aws/endpoints "871.2.30.22"]
+                 [com.cognitect.aws/s3 "871.2.30.22"]
                  [com.github.mwiede/jsch "0.2.24"]
                  [commons-net "3.11.1"]
                  [lambdaisland/uri "1.19.155"]

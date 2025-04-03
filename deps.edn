@@ -1,7 +1,7 @@
 ;; Only for the git dependency of tools.deps
-{:deps {com.cognitect.aws/api {:mvn/version "0.8.692"}
-        com.cognitect.aws/endpoints {:mvn/version "871.2.30.11"}
-        com.cognitect.aws/s3 {:mvn/version "871.2.30.11"}
+{:deps {com.cognitect.aws/api {:mvn/version "0.8.735"}
+        com.cognitect.aws/endpoints {:mvn/version "871.2.30.22"}
+        com.cognitect.aws/s3 {:mvn/version "871.2.30.22"}
         com.github.mwiede/jsch {:mvn/version "0.2.24"}
         commons-net/commons-net {:mvn/version "3.11.1"}
         lambdaisland/uri {:mvn/version "1.19.155"}
