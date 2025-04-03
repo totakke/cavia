@@ -17,8 +17,7 @@
   :jvm-opts ["-Dclojure.spec.check-asserts=true"]
   :test-selectors {:default (complement :integration)
                    :integration :integration}
-  :profiles {:1.9 {:dependencies [[org.clojure/clojure "1.9.0"]]}
-             :1.10 {:dependencies [[org.clojure/clojure "1.10.3"]]}
+  :profiles {:1.10 {:dependencies [[org.clojure/clojure "1.10.3"]]}
              :1.11 {:dependencies [[org.clojure/clojure "1.11.3"]]}
              :1.12 {:dependencies [[org.clojure/clojure "1.12.0"]]}}
   :deploy-repositories [["snapshots" {:url "https://clojars.org/repo/"
