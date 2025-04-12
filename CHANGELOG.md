@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### BREAKING
+
+- Drop support for Java 8 and Clojure 1.9. [#10](https://github.com/totakke/cavia/pull/10)
+
 ### Added
 
 - Support SHA512 hash algorithm (`:sha512`). [9d1d141](https://github.com/totakke/cavia/commit/9d1d141)
@@ -17,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Migrate digest to clj-commons/digest. [3dc4fef](https://github.com/totakke/cavia/commit/3dc4fef)
 - Migrate jcraft/jsch to mwiede/jsch. [ff3dbba](https://github.com/totakke/cavia/commit/ff3dbba)
 - Use clj-http-lite instead of clj-http. [6cc4005](https://github.com/totakke/cavia/commit/6cc4005)
+- Update aws-api to 0.8.735. [#10](https://github.com/totakke/cavia/pull/10)
 
 ### Fixed
 
@@ -39,7 +44,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.7.1] - 2024-06-23
 
-### Changed
+### Security
 
 - Bump up commons-compress to 1.26.2. [#8](https://github.com/totakke/cavia/pull/8)
   - Because of CVE-2024-25710 and CVE-2024-26308.
