@@ -3,9 +3,9 @@
   :url "https://github.com/totakke/cavia"
   :license {:name "The MIT License"
             :url "https://opensource.org/licenses/MIT"}
-  :dependencies [[com.cognitect.aws/api "0.8.692"]
-                 [com.cognitect.aws/endpoints "871.2.30.11"]
-                 [com.cognitect.aws/s3 "871.2.30.11"]
+  :dependencies [[com.cognitect.aws/api "0.8.735"]
+                 [com.cognitect.aws/endpoints "871.2.30.22"]
+                 [com.cognitect.aws/s3 "871.2.30.22"]
                  [com.github.mwiede/jsch "0.2.24"]
                  [commons-net "3.11.1"]
                  [lambdaisland/uri "1.19.155"]
@@ -17,8 +17,7 @@
   :jvm-opts ["-Dclojure.spec.check-asserts=true"]
   :test-selectors {:default (complement :integration)
                    :integration :integration}
-  :profiles {:1.9 {:dependencies [[org.clojure/clojure "1.9.0"]]}
-             :1.10 {:dependencies [[org.clojure/clojure "1.10.3"]]}
+  :profiles {:1.10 {:dependencies [[org.clojure/clojure "1.10.3"]]}
              :1.11 {:dependencies [[org.clojure/clojure "1.11.3"]]}
              :1.12 {:dependencies [[org.clojure/clojure "1.12.0"]]}}
   :deploy-repositories [["snapshots" {:url "https://clojars.org/repo/"

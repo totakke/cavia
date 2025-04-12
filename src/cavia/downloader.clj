@@ -10,6 +10,7 @@
             [clojure.spec.alpha :as s]
             [cognitect.aws.client.api :as aws]
             [cognitect.aws.credentials :as credentials]
+            [cognitect.aws.signers :as signers]
             [lambdaisland.uri :as uri]
             [progrock.core :as pr])
   (:import [java.io File InputStream OutputStream IOException]
@@ -146,6 +147,22 @@
                :f (s/or :string string?
                         :file #(instance? File %))
                :auth ::specs/auth))
+
+;; Workaround for https://github.com/cognitect-labs/aws-api/issues/263
+(let [orig-sign-fn (get-method signers/sign-http-request "s3")]
+  (defmethod signers/sign-http-request "s3"
+    [service endpoint credentials http-request]
+    (if (= (:hostname endpoint) "localhost")
+      (signers/v4-sign-http-request
+       service
+       endpoint
+       credentials
+       (assoc-in http-request [:headers "host"]
+                 (str (get-in http-request [:headers "host"]) ":"
+                      (:server-port http-request)))
+       :content-sha256-header?
+       true)
+      (orig-sign-fn service endpoint credentials http-request))))
 
 (defn- s3-client
   [url auth]
