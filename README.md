@@ -8,46 +8,44 @@ Remote resource management for Clojure projects.
 
 ## Rationale
 
-In some cases, tests of a project require large-size files. Among other things,
-codes for parsing and I/O should be tested by various kinds of files. But
-generally, SCM is not good for controlling such large test files. One of the
-solutions is using other tools like git-annex or Git LFS. Some Clojurians,
-however, may think that they want to solve it in the Clojure ecosystem.
+When testing projects, large-size files are sometimes required. Parsing and I/O
+code, in particular, benefits from testing with a variety of file types.
+However, traditional Source Code Management (SCM) systems are often not ideal
+for handling these large test files. Solutions like git-annex or Git LFS are
+commonly used.
 
-Cavia is useful for such developers. Cavia is written in Clojure so that it can
-be directly used in a project and source codes. Cavia downloads test resources
-from remotes, checks their hash before tests, and provides convenience
-functions to access the resources.
-
-## NOTICE
-
-The OSS license of Cavia was changed to the [MIT License](LICENSE) since v0.7.0.
+Some Clojure developers, however, might prefer a solution within the Clojure
+ecosystem. Cavia is designed for these developers. Written entirely in Clojure,
+Cavia can be seamlessly integrated into projects and source code. It works by
+downloading test resources from remote locations, verifying their integrity
+using hash checks before testing, and providing convenient functions for
+accessing those resources.
 
 ## Installation
 
 Clojure CLI/deps.edn (as Git):
 
 ```clojure
-io.github.totakke/cavia {:git/tag "v0.7.2" :git/sha "0788cb4"}
+io.github.totakke/cavia {:git/tag "v0.8.0" :git/sha "commit hash"}
 ```
 
 Clojure CLI/deps.edn (as Maven):
 
 ```clojure
-cavia/cavia {:mvn/version "0.7.2"}
+cavia/cavia {:mvn/version "0.8.0"}
 ```
 
 Leiningen/Boot:
 
 ```clojure
-[cavia "0.7.2"]
+[cavia "0.8.0"]
 ```
 
 ## Basic usage
 
-### Define resources profile
+### Resource profile
 
-First, load `cavia.core` and prepare resources' information with `defprofile`
+First, load `cavia.core` and prepare resources information with `defprofile`
 macro.
 
 ```clojure
@@ -81,27 +79,25 @@ macro.
                ;; Compressed resource
                {:id :resource5
                 :url "http://example.com/resource5.gz"
-                :sha1 "456789abcdef01234567890abcdef0123456789a"
+                :sha512 "456789abcdef01234567890abcdef0123456789abcdef01234567890abcdef01234567890abcdebcdef01234567890abcdef01234567890abcdebcdef0123456"
                 :packed :gzip}]
    :download-to ".cavia"})
 ```
 
 Resources are defined in `:resources` as a vector including some maps. Each
-resource map must have `:id :url :md5/:sha1/:sha256` fields, which are
-mandatory. `:id` should be specified as keyword or string, which is used for
-resource access and downloading file name.
+resource map must have `:id`, `:url`, and a hash like `:sha1`.
 
-MD5, SHA1, and SHA256 are supported as hash algorithms for verifying files. One
-algorithm must be specified at least. If more than one algorithm are specified,
-a stronger algorithm will be used: MD5 < SHA1 < SHA256.
+| key | required? | description |
+| --- | --------- | ----------- |
+| `:id` | **Yes** | `:id` should be specified as a keyword or a string, which is used for resource access and downloading a file. |
+| `:url` | **Yes** | A URL string. Cavia is now supporting HTTP/HTTPS/FTP/FTPS/S3 protocols. |
+| hash | **Yes** | MD5 (`:md5`), SHA1 (`:sha1`), SHA256 (`:sha256`), and SHA512 (`:sha512`) are supported as a hash algorithm for verifying files. One algorithm must be specified at least. If more than one algorithm are specified, a stronger algorithm will be used. |
+| `:protocol` | Optional | The specified protocol is used for downloading. `:http`, `:ftp`, `:sftp`, and `:s3` are supported. If `:protocol` is not specified, a protocol inferred from `:url` is used. |
+| `:auth` | Optional | `:auth` is used for password authentication. Cavia is now supporting Basic/Digest/OAuth2 authentications. |
+| `:packed` | Optional | A resource that `:packed` specified will be uncompressed after downloading. gzip (`:gzip`) and bzip2 (`:bzip2`) formats are supported. |
 
-`:auth` field is optional. It can be used for password authentication.
-Cavia is now supporting HTTP/HTTPS/FTP/FTPS/S3 protocols and Basic/Digest/OAuth2
-authentications. A resource that `:packed` specified will be uncompressed after
-downloading. Only gzip (`:gzip`) format is supported.
-
-Cavia downloads resources to `:download-to` directory. The default location is
-`./.cavia`. Thus maybe you should add `/.cavia` to your SCM ignore list.
+The downloads resources are saved into `:download-to` directory. The default
+location is `./.cavia`. You should add `/.cavia` to your SCM ignore list.
 
 ### Resource management
 
@@ -110,7 +106,7 @@ Cavia provides some functions for managing resources.
 ```clojure
 (cavia/get! prof)   ; downloads missing resources
 
-(cavia/verify prof) ; checks the downloaded resources' hash
+(cavia/verify prof) ; checks the downloaded resources hash
 
 (cavia/clean! prof) ; removes the download directory
 ```
@@ -124,9 +120,9 @@ macro.
   (cavia/get!))
 ```
 
-`get!` and other functions output logs and download progress to stdout. To call
-the above functions quietly, use `with-verbosity` macro. For example, the
-following code suppresses normal messages but displays download progress.
+Some functions output logs and download progress to stdout. To call the
+functions quietly, use `with-verbosity` macro. For example, the following code
+suppresses the normal messages but displays the download progress.
 
 ```clojure
 (with-verbosity {:message false
@@ -136,7 +132,7 @@ following code suppresses normal messages but displays download progress.
 
 ### Resource access
 
-You do not need to remember the downloaded resources' paths any more. `resource`
+You do not need to remember the downloaded resource paths any more. `resource`
 returns the absolute path to the resource from the specified resource id. It
 returns `nil` when the id is not defined.
 
@@ -148,13 +144,9 @@ returns `nil` when the id is not defined.
 ;;=> nil
 ```
 
-## Integration with test frameworks
+## Using with a test framework
 
-Cavia is a library for management of test resources. It is good to use Cavia
-with test frameworks like clojure.test,
-[Midje](https://github.com/marick/Midje), etc.
-
-### with clojure.test
+### clojure.test
 
 ```clojure
 (ns foo.core-test
@@ -177,7 +169,7 @@ with test frameworks like clojure.test,
     (is (= (slurp (cavia/resource prof :resource1)) "resource1's content")))
 ```
 
-### with Midje
+### Midje
 
 ```clojure
 (ns foo.t-core
@@ -198,7 +190,7 @@ with test frameworks like clojure.test,
   )
 ```
 
-## Use as a simple downloader
+## Using a simple downloader
 
 Cavia provides features of file downloading as independent functions.
 
