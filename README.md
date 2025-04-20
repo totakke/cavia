@@ -26,7 +26,7 @@ accessing those resources.
 Clojure CLI/deps.edn (as Git):
 
 ```clojure
-io.github.totakke/cavia {:git/tag "v0.8.0" :git/sha "commit hash"}
+io.github.totakke/cavia {:git/tag "v0.8.0" :git/sha "4c5e8ef"}
 ```
 
 Clojure CLI/deps.edn (as Maven):
